@@ -76,6 +76,16 @@ export default function EditRoot({ origins, manifestVersion }: { origins: string
 	const moving = useRef<{ id: string; type: string; pointer: number } | null>(null);
 	const stateRef = useRef(state);
 	stateRef.current = state;
+	const pendingScroll = useRef<string | null>(null);
+	// After a draw: the block the panel selected before it existed.
+	useEffect(() => {
+		const id = pendingScroll.current;
+		if (!id) return;
+		const el = elementOf(id);
+		if (!el) return;
+		pendingScroll.current = null;
+		requestAnimationFrame(() => el.scrollIntoView({ block: 'center', behavior: 'smooth' }));
+	}, [state]);
 
 	const post = useCallback(
 		(msg: CanvasMessage) => {
@@ -110,10 +120,14 @@ export default function EditRoot({ origins, manifestVersion }: { origins: string
 				case 'theme':
 					setState(s => (s ? { ...s, theme: m.theme } : s));
 					break;
-				case 'select':
+				case 'select': {
 					setSelected(m.id);
-					elementOf(m.id)?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+					const el = elementOf(m.id);
+					// A block just added isn't drawn yet: scroll to it once it is (centred, so the new section is in view).
+					if (el) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+					else pendingScroll.current = m.id;
 					break;
+				}
 				case 'hover':
 					setHovered(m.id);
 					break;
