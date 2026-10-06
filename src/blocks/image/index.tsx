@@ -11,33 +11,14 @@ const RADIUS: Record<string, string> = {
 	xl: 'rounded-xl',
 	full: 'rounded-full',
 };
-const MEDIA_HOSTS = (process.env.NEXT_PUBLIC_MEDIA_HOSTS || '').split(',').filter(Boolean);
-
-/** Next's image optimizer only for hosts configured in next.config (MEDIA_HOSTS). */
-const optimizable = (src: string) => {
-	try {
-		const u = new URL(src);
-		return u.protocol === 'https:' && MEDIA_HOSTS.includes(u.hostname);
-	} catch {
-		return false;
-	}
-};
-
-// next/image's default device widths. The <img> asks the optimizer directly
-// (/_next/image?url=…&w=…) instead of using next/image, which is a client
-// component and would ship its JS on every page, images or not.
-const WIDTHS = [640, 750, 828, 1080, 1200, 1920, 2048];
-const SIZES = '(min-width: 1024px) 50vw, 100vw';
-const optimized = (src: string, w: number) => `/_next/image?url=${encodeURIComponent(src)}&w=${w}&q=75`;
 
 function Img({ src, alt, priority, className }: { src: string; alt: string; priority: boolean; className: string }) {
-	const opt = optimizable(src);
+	// A plain <img> straight from the media host — no image optimizer (it's
+	// billed per image, and it would serve every tenant's pictures).
 	return (
 		// eslint-disable-next-line @next/next/no-img-element
 		<img
-			src={opt ? optimized(src, 1200) : src}
-			srcSet={opt ? WIDTHS.map(w => `${optimized(src, w)} ${w}w`).join(', ') : undefined}
-			sizes={opt ? SIZES : undefined}
+			src={src}
 			alt={alt}
 			loading={priority ? 'eager' : 'lazy'}
 			fetchPriority={priority ? 'high' : undefined}

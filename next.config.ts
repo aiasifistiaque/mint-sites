@@ -1,13 +1,6 @@
 import path from 'path';
 import type { NextConfig } from 'next';
 
-// Hosts whose images go through next/image; anything else is drawn with a plain
-// <img> (src/blocks/image). Comma list, e.g. "bucket.s3.amazonaws.com,cdn.example.com".
-const mediaHosts = (process.env.MEDIA_HOSTS || '')
-	.split(',')
-	.map(h => h.trim())
-	.filter(Boolean);
-
 // The tenant panel's addresses: only they may frame the editor's canvas.
 const panelOrigins = (process.env.PANEL_ORIGINS || '')
 	.split(',')
@@ -19,10 +12,9 @@ const nextConfig: NextConfig = {
 	poweredByHeader: false,
 	// The monorepo root has its own lockfile; this app is its own root.
 	turbopack: { root: path.join(__dirname) },
-	images: {
-		remotePatterns: mediaHosts.map(hostname => ({ protocol: 'https' as const, hostname })),
-	},
-	env: { NEXT_PUBLIC_MEDIA_HOSTS: mediaHosts.join(',') },
+	// No image optimizer: billed per image on Vercel, and every tenant's
+	// pictures would go through it. Images are plain <img> (src/blocks/image).
+	images: { unoptimized: true },
 	async headers() {
 		return [
 			{

@@ -50,9 +50,14 @@ npm run dev          # http://localhost:3300
 Every backend call carries `x-mint-renderer: <SITE_REVALIDATE_SECRET>`, so the
 public API's per-IP limit doesn't apply to the renderer.
 
-No block or page ships client JS unless it must: images use `<img srcset>`
-pointing at Next's image optimizer (not `next/image`, a client component),
-scripts are plain `<script async>` (not `next/script`).
+No block or page ships client JS unless it must: images are plain `<img>`
+straight from the media host, scripts are plain `<script async>` (not
+`next/script`).
+
+**No image optimizer.** Not `next/image`, not `/_next/image`
+(`images.unoptimized` is on): Vercel bills it per image, and the renderer
+serves every tenant's pictures. Smaller copies, if ever needed, are made once
+at upload time and stored next to the original.
 
 ## Check
 

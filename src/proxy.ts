@@ -8,7 +8,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { resolveHost } from '@/lib/api';
 
 export const config = {
-	matcher: ['/((?!_next/static|_next/image|api/).*)'],
+	matcher: ['/((?!_next/static|api/).*)'],
 };
 
 export async function proxy(request: NextRequest) {
