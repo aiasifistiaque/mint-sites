@@ -113,9 +113,10 @@ export function tokensToCss(t: Tokens, scheme: 'toggle' | 'system' | 'light' | '
  * — fails on Vercel). Only families on the curated list (themes/fonts.ts), and
  * only weights they have: one bad family or weight fails the whole stylesheet.
  */
-export function fontHref(t: Tokens): string | null {
+export function fontHref(t: Tokens, { mono = true }: { mono?: boolean } = {}): string | null {
 	const byFamily = new Map<string, Set<number>>();
-	for (const f of Object.values(t.fonts)) {
+	// The mono font only shows in rich-text <code>; a page without any skips it (SB-08 budget).
+	for (const f of mono ? Object.values(t.fonts) : [t.fonts.heading, t.fonts.body]) {
 		if (!FONT_BY_FAMILY.has(f.family)) continue;
 		const set = byFamily.get(f.family) || new Set<number>();
 		f.weights.forEach(w => set.add(w));

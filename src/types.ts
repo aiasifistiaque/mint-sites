@@ -293,4 +293,23 @@ export type RenderContext = {
 	sections?: Record<string, SavedSection>;
 	/** drawing a saved section's own blocks (a saved section never holds another) */
 	inSection?: boolean;
+	/** the site's name, logo and contact details (Website settings) — header, logo, social links, map */
+	site?: SiteInfo;
+	/** pages marked "show in the menu", in order */
+	menu?: MenuItem[];
+	/** this page's path, and the pages above it (breadcrumbs) */
+	path?: string;
+	crumbs?: MenuItem[];
+	/** the accordion an accordion item belongs to (one open at a time) */
+	group?: string;
+};
+
+export type MenuItem = { label: string; path: string };
+
+export type SiteInfo = {
+	name: string;
+	tagline?: string;
+	logo?: string;
+	contact?: Record<string, string>;
+	social?: Record<string, string>;
 };

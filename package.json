@@ -8,7 +8,8 @@
 		"start": "next start -p 3300",
 		"type-check": "tsc --noEmit",
 		"test": "vitest run",
-		"manifest": "tsx scripts/manifest.ts"
+		"manifest": "tsx scripts/manifest.ts",
+		"thumbnails": "node scripts/thumbnails.mjs"
 	},
 	"dependencies": {
 		"nanoid": "^6.0.2",

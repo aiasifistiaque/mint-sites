@@ -19,6 +19,25 @@ import { def as spacer } from './spacer/schema';
 import { def as stack } from './stack/schema';
 import { def as text } from './text/schema';
 import { def as video } from './video/schema';
+import { def as accordion } from './accordion/schema';
+import { def as accordionItem } from './accordion-item/schema';
+import { def as badge } from './badge/schema';
+import { def as breadcrumbs } from './breadcrumbs/schema';
+import { def as card } from './card/schema';
+import { def as carousel } from './carousel/schema';
+import { def as countdown } from './countdown/schema';
+import { def as formPlaceholder } from './form-placeholder/schema';
+import { def as gallery } from './gallery/schema';
+import { def as header } from './header/schema';
+import { def as logo } from './logo/schema';
+import { def as map } from './map/schema';
+import { def as marquee } from './marquee/schema';
+import { def as navMenu } from './nav-menu/schema';
+import { def as quote } from './quote/schema';
+import { def as socialLinks } from './social-links/schema';
+import { def as stat } from './stat/schema';
+import { def as tab } from './tab/schema';
+import { def as tabs } from './tabs/schema';
 
 export const BLOCK_DEFS: BlockDef[] = [
 	section,
@@ -39,4 +58,23 @@ export const BLOCK_DEFS: BlockDef[] = [
 	modal,
 	drawer,
 	popover,
+	accordion,
+	accordionItem,
+	badge,
+	breadcrumbs,
+	card,
+	carousel,
+	countdown,
+	formPlaceholder,
+	gallery,
+	header,
+	logo,
+	map,
+	marquee,
+	navMenu,
+	quote,
+	socialLinks,
+	stat,
+	tab,
+	tabs,
 ];

@@ -6,6 +6,7 @@ import { getTheme } from '@/themes';
 import { collectAnchors } from './actions';
 import { compileStyles } from './compileStyles';
 import { RenderTree } from './RenderTree';
+import { interactiveScript, usedTypes } from './interactive';
 import { hasOverlays, OVERLAY_SCRIPT } from './overlays';
 import { fontHref, mergeTokens, tokensToCss } from './tokens';
 
@@ -41,18 +42,33 @@ export function usedSections(trees: Node[][], sections: Record<string, SavedSect
 
 export function SiteDocument({ theme, tokens, colorScheme = 'light', header = [], tree, footer = [], sections, ctx }: SiteDocumentProps) {
 	const merged = mergeTokens(getTheme(theme).tokens, tokens);
-	const href = fontHref(merged);
 	const all = [...header, ...tree, ...footer];
 	const used = usedSections([all], sections);
 	const savedTrees = Object.values(used).map(s => s.tree);
+	const live = (ctx?.mode ?? 'live') === 'live';
+	const href = fontHref(merged, { mono: !live || JSON.stringify([all, savedTrees]).includes('<code') });
 	const context: RenderContext = { mode: 'live', ...ctx, anchors: collectAnchors([all, ...savedTrees]), sections: used };
+	const script = live ? interactiveScript(usedTypes([all, ...savedTrees])) : '';
 	return (
 		<>
 			{href && (
 				<>
 					<link rel='preconnect' href='https://fonts.googleapis.com' />
 					<link rel='preconnect' href='https://fonts.gstatic.com' crossOrigin='' />
-					<link rel='stylesheet' href={href} precedence='default' />
+					{live ? (
+						// Published pages don't wait for Google Fonts: the text shows in the
+						// fallback at once and swaps when the font arrives (display=swap) —
+						// a stylesheet added from script doesn't block the first paint.
+						<>
+							<link rel='preload' as='style' href={href} />
+							<script dangerouslySetInnerHTML={{ __html: `(()=>{const l=document.createElement('link');l.rel='stylesheet';l.href=${JSON.stringify(href)};document.head.appendChild(l)})()` }} />
+							<noscript>
+								<link rel='stylesheet' href={href} />
+							</noscript>
+						</>
+					) : (
+						<link rel='stylesheet' href={href} precedence='default' />
+					)}
 				</>
 			)}
 			<style dangerouslySetInnerHTML={{ __html: tokensToCss(merged, colorScheme === 'system' ? 'system' : 'toggle') }} />
@@ -64,7 +80,8 @@ export function SiteDocument({ theme, tokens, colorScheme = 'light', header = []
 				</main>
 				{footer.length > 0 && <RenderTree nodes={footer} ctx={context} />}
 			</div>
-			{context.mode === 'live' && hasOverlays([all]) && <script dangerouslySetInnerHTML={{ __html: OVERLAY_SCRIPT }} />}
+			{live && hasOverlays([all, ...savedTrees]) && <script dangerouslySetInnerHTML={{ __html: OVERLAY_SCRIPT }} />}
+			{script && <script dangerouslySetInnerHTML={{ __html: script }} />}
 		</>
 	);
 }

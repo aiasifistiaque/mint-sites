@@ -14,9 +14,17 @@ import { sanitizeRichText } from '@/render/sanitize';
 import { SiteDocument } from '@/render/SiteDocument';
 import type { Node } from '@/types';
 import { elementOf, findDrop, locate, type DropResult } from './drop';
-import { isPanelMessage, type CanvasDesign, type CanvasLayout, type CanvasMessage, type Rect } from './protocol';
+import { isPanelMessage, type CanvasContext, type CanvasDesign, type CanvasLayout, type CanvasMessage, type Rect } from './protocol';
 
-type State = { design: CanvasDesign; layout: CanvasLayout; tree: Node[]; links: Record<string, string>; theme: 'light' | 'dark'; readOnly: boolean };
+type State = {
+	design: CanvasDesign;
+	layout: CanvasLayout;
+	tree: Node[];
+	links: Record<string, string>;
+	theme: 'light' | 'dark';
+	readOnly: boolean;
+	context: CanvasContext;
+};
 
 const findNode = (nodes: Node[] | undefined, id: string): Node | null => {
 	for (const n of nodes || []) {
@@ -84,13 +92,16 @@ export default function EditRoot({ origins, manifestVersion }: { origins: string
 			const m = e.data;
 			switch (m.type) {
 				case 'init':
-					setState({ design: m.design, layout: m.layout, tree: m.page.tree, links: m.links || {}, theme: m.theme, readOnly: !!m.readOnly });
+					setState({ design: m.design, layout: m.layout, tree: m.page.tree, links: m.links || {}, theme: m.theme, readOnly: !!m.readOnly, context: m.context || {} });
 					break;
 				case 'tree':
 					setState(s => (s ? { ...s, tree: m.tree, ...(m.layout !== undefined && { layout: m.layout }) } : s));
 					break;
 				case 'design':
 					setState(s => (s ? { ...s, design: m.design } : s));
+					break;
+				case 'context':
+					setState(s => (s ? { ...s, context: m.context || {} } : s));
 					break;
 				case 'theme':
 					setState(s => (s ? { ...s, theme: m.theme } : s));
@@ -330,7 +341,7 @@ export default function EditRoot({ origins, manifestVersion }: { origins: string
 				tree={state.tree}
 				footer={state.layout?.footer}
 				sections={state.design.sections}
-				ctx={{ mode: 'edit', pages: state.links }}
+				ctx={{ ...state.context, mode: 'edit', pages: state.links }}
 			/>
 			{openId && (
 				<div

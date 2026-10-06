@@ -20,7 +20,7 @@ export const bright: Theme = {
 			secondary: { light: '#ffe4dc', dark: '#3a1f1a' },
 			'secondary-foreground': { light: '#7a2614', dark: '#ffd0c2' },
 			accent: { light: '#ff7a59', dark: '#ff9b80' },
-			'accent-foreground': { light: '#ffffff', dark: '#1f0d08' },
+			'accent-foreground': { light: '#2a0d05', dark: '#1f0d08' },
 			card: { light: '#ffffff', dark: '#191427' },
 			'card-foreground': { light: '#1c1530', dark: '#ece8f7' },
 			border: { light: '#e7e1f5', dark: '#2c2540' },

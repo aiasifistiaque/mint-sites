@@ -160,6 +160,124 @@
 		border-radius: var(--mint-radius-md);
 		box-shadow: var(--mint-shadow-md);
 	}
+	/* Card padding (a variable, so a first picture can cancel it — below). */
+	.mint-card {
+		padding: var(--mint-card-pad);
+	}
+	.mint-card-pad-none {
+		--mint-card-pad: 0px;
+	}
+	.mint-card-pad-sm {
+		--mint-card-pad: var(--mint-space-4);
+	}
+	.mint-card-pad-md {
+		--mint-card-pad: var(--mint-space-6);
+	}
+	.mint-card-pad-lg {
+		--mint-card-pad: var(--mint-space-8);
+	}
+
+	/* Carousel: scroll-snap slides; phones show one and a peek of the next. */
+	.mint-carousel-track {
+		display: grid;
+		grid-auto-flow: column;
+		grid-auto-columns: 85%;
+		gap: var(--gap, 1rem);
+		overflow-x: auto;
+		scroll-snap-type: x mandatory;
+		scrollbar-width: none;
+		overscroll-behavior-x: contain;
+	}
+	.mint-carousel-track::-webkit-scrollbar {
+		display: none;
+	}
+	.mint-carousel-track > * {
+		scroll-snap-align: start;
+		min-width: 0;
+	}
+	@media (min-width: 768px) {
+		.mint-carousel-track {
+			grid-auto-columns: calc((100% - (var(--per-md) - 1) * var(--gap, 1rem)) / var(--per-md));
+		}
+	}
+	@media (min-width: 1024px) {
+		.mint-carousel-track {
+			grid-auto-columns: calc((100% - (var(--per) - 1) * var(--gap, 1rem)) / var(--per));
+		}
+	}
+
+	/* Moving strip: two copies side by side, moved by one copy's width. */
+	.mint-marquee {
+		overflow: hidden;
+	}
+	.mint-marquee-fade {
+		mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+	}
+	.mint-marquee-track {
+		display: flex;
+		width: max-content;
+	}
+	.mint-marquee-group {
+		display: flex;
+		align-items: center;
+		gap: var(--gap, 3rem);
+		padding-right: var(--gap, 3rem);
+		flex-shrink: 0;
+	}
+	@media (prefers-reduced-motion: no-preference) {
+		.mint-marquee-track {
+			animation: mint-marquee var(--speed, 35s) linear infinite;
+		}
+		.mint-marquee[data-reverse] .mint-marquee-track {
+			animation-direction: reverse;
+		}
+		.mint-marquee:hover .mint-marquee-track {
+			animation-play-state: paused;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.mint-marquee-track {
+			flex-wrap: wrap;
+			width: auto;
+			justify-content: center;
+		}
+		.mint-marquee-group[aria-hidden] {
+			display: none;
+		}
+	}
+	@keyframes mint-marquee {
+		to {
+			transform: translateX(-50%);
+		}
+	}
+
+	/* The header's phone menu (a popover). */
+	.mint-menu-panel {
+		inset: 0 auto 0 0;
+		margin: 0;
+		height: 100dvh;
+		max-height: 100dvh;
+		width: min(22rem, 88vw);
+		box-shadow: var(--mint-shadow-lg);
+	}
+	.mint-menu-panel::backdrop {
+		background: rgb(0 0 0 / 0.5);
+	}
+	@media (prefers-reduced-motion: no-preference) {
+		.mint-menu-panel:popover-open {
+			animation: mint-slide-l 200ms ease-out;
+		}
+	}
+
+	/* The gallery's big picture. */
+	.mint-lightbox {
+		inset: 0;
+		margin: auto;
+		max-height: calc(100dvh - 2rem);
+		border-radius: var(--mint-radius-lg);
+		box-shadow: var(--mint-shadow-lg);
+	}
+
 	@media (prefers-reduced-motion: no-preference) {
 		dialog.mint-modal[open] {
 			animation: mint-pop 160ms ease-out;
@@ -187,4 +305,15 @@
 			transform: translateX(-100%);
 		}
 	}
+}
+
+/* Outside the layers on purpose, so it beats the image block's own w-full:
+   a card's first picture goes edge to edge (not with no padding). */
+.mint-card:not(.mint-card-pad-none) > [data-n]:first-child:has(> img, > div > img, > [role='img']) {
+	margin: calc(var(--mint-card-pad) * -1) calc(var(--mint-card-pad) * -1) 0;
+	width: calc(100% + 2 * var(--mint-card-pad));
+	max-width: none;
+}
+.mint-card:not(.mint-card-pad-none) > [data-n]:first-child:has(> img, > div > img, > [role='img']) :is(img, [role='img'], div) {
+	border-radius: 0;
 }

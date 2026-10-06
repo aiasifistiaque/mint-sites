@@ -35,7 +35,11 @@ describe('overlays', () => {
 		const live = renderToStaticMarkup(<SiteDocument tree={[opener, drawer]} />);
 		expect(live).toContain(OVERLAY_SCRIPT.slice(0, 40));
 		const plain = renderToStaticMarkup(<SiteDocument tree={[{ id: 'hd000001', type: 'heading', props: {} }]} />);
-		expect(plain).not.toContain('<script');
+		expect(plain).not.toContain(OVERLAY_SCRIPT.slice(0, 40));
+		// the only script on a plain page is the one that loads the fonts without blocking the first paint
+		expect(plain.match(/<script>/g)).toHaveLength(1);
+		expect(plain).toMatch(/<link rel="preload" as="style" href="https:\/\/fonts\.googleapis\.com\/css2\?family=Inter[^"]*"/);
+		expect(plain).not.toMatch(/css2\?[^"]*JetBrains/); // no <code> on the page, no mono font asked for
 		const edit = renderToStaticMarkup(<SiteDocument tree={[opener, drawer]} ctx={{ mode: 'edit' }} />);
 		expect(edit).not.toContain('<script');
 	});

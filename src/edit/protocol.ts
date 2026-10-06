@@ -3,7 +3,7 @@
 // src/app/site-builder/_components/protocol.ts) — change both together.
 // Every message is { mint: 1, type, …payload }; each side ignores messages from
 // any origin it doesn't trust. The canvas never saves: the panel owns the draft.
-import type { Node, SavedSection, TokenOverrides } from '@/types';
+import type { MenuItem, Node, SavedSection, SiteInfo, TokenOverrides } from '@/types';
 
 export const PROTOCOL = 1;
 
@@ -14,6 +14,8 @@ export type CanvasDesign = {
 	/** the draft's saved sections, for section-ref blocks */
 	sections?: Record<string, SavedSection>;
 };
+/** What blocks show from the site itself: name, logo, contact, the menu, this page's place (SB-08). */
+export type CanvasContext = { site?: SiteInfo; menu?: MenuItem[]; path?: string; crumbs?: MenuItem[] };
 export type CanvasLayout = { header: Node[]; footer: Node[] } | null;
 export type Rect = { x: number; y: number; w: number; h: number };
 /** Where a dragged block would land: inside `parentId` (null = the page itself), in `slot`, at `index`. */
@@ -34,7 +36,9 @@ export type PanelMessage =
 			theme: 'light' | 'dark';
 			/** a role that can't change the site: no dragging or typing on the canvas */
 			readOnly?: boolean;
+			context?: CanvasContext;
 	  }
+	| { mint: 1; type: 'context'; context: CanvasContext }
 	| { mint: 1; type: 'tree'; tree: Node[]; layout?: CanvasLayout }
 	| { mint: 1; type: 'design'; design: CanvasDesign }
 	/** the panel's light / dark preview switch */

@@ -42,6 +42,8 @@ export type RenderData = {
 	page: { id: string; path: string; name: string; tree: Node[]; seo: SeoResolved };
 	data: { record?: Record<string, unknown>; nodes: Record<string, unknown>; contents: Record<string, unknown> };
 	menu: { label: string; path: string; children?: { label: string; path: string }[] }[];
+	/** the pages above this one, home first, this page last (breadcrumbs) */
+	crumbs?: { label: string; path: string }[];
 	links: Record<string, string>;
 	tags: {
 		head: string;

@@ -15,9 +15,11 @@ npm install
 npm run dev          # http://localhost:3300
 ```
 
-- `http://localhost:3300/__mint/fixture` — every block on one page with the
-  Studio theme (`?theme=dark` for dark). Dev only; a production build serves
-  it only with `MINT_FIXTURES=1`.
+- `http://localhost:3300/__mint/fixture` — the fixture page. `?view=blocks`
+  (every block with its defaults), `?view=presets` (every preset),
+  `?view=demo` (20 sections — the performance budget), `?preset=<key>` (one
+  preset alone); add `&theme=<key>` and `&mode=dark` for any theme in light or
+  dark. Dev only; a production build serves it only with `MINT_FIXTURES=1`.
 - Copy `.env.example` to `.env.local`: `MINT_API_URL` (the backend) and
   `SITE_REVALIDATE_SECRET` (the same value as the backend's).
 - A published site: `http://<publicSlug>.localhost:3300/` (the backend maps
@@ -95,15 +97,21 @@ src/render/styleSchema.ts    the fixed style keys and their allowed values
 src/render/tokens.ts         theme tokens (+ overrides) → CSS variables, Google Fonts link
 src/render/actions.ts        node actions → href / data-mint-* attributes
 src/render/sanitize.ts       rich text allowlist, safe hrefs
-src/render/SiteDocument.tsx  fonts + token CSS + node CSS + header/page/footer
+src/render/SiteDocument.tsx  fonts + token CSS + node CSS + header/page/footer + page scripts
+src/render/interactive.ts    small inline scripts for tabs, carousel, gallery, countdown (only where used)
+src/render/overlays.ts       the inline script for pop-ups, drawers and popovers
 src/render/LivePage.tsx      a published page: SiteDocument + the tracker and mint.js
 src/render/metadata.ts       a page's <head> from the render answer
 src/lib/api.ts               render + resolve calls to the backend
 src/proxy.ts                 host → site → rewrite
 src/app/%5Fs/[site]/…        published pages, 404, sitemap.xml, robots.txt
 src/app/api/revalidate       the backend's signal after Publish
-src/themes/<key>.ts          themes (Studio first)
-src/presets/index.ts         presets (header-simple, hero-centered, footer-simple)
+src/themes/<key>.ts          themes: studio, editorial, bright, market, calm, mono, bistro
+src/themes/contrast.ts       WCAG contrast; every theme's text pairs must reach 4.5:1 (test)
+src/presets/index.ts         presets (header-simple, hero-centered, footer-simple — the backend seeds these)
+src/presets/sections.ts      the rest of the catalogue, written with src/presets/build.ts
+src/presets/thumbnails.json  key → thumbnail (scripts/thumbnails.mjs)
+public/__mint/presets/       the thumbnails (≤ 40 KB each)
 src/manifest.ts              buildManifest()
 src/app/%5F_mint/…           the /__mint/* routes (a folder starting with "_"
                              is private in the App Router; %5F makes the URL "_")
@@ -132,9 +140,34 @@ fixtures/home.json           the fixture page
    component; spread `attrs` on the root).
 2. Add it to `src/blocks/defs.ts` and `src/blocks/registry.ts` (through
    `next/dynamic` if `client: true`).
-3. Use it in `fixtures/home.json`, run `npm run manifest`, `npm test`.
+3. Check it at `/__mint/fixture?view=blocks` (light, dark, a few themes),
+   run `npm run manifest`, `npm test`.
 4. Sync the manifest to the backend (`node scripts/siteBuilder/syncManifest.mjs`
    in `backend/`).
+
+## Presets and thumbnails
+
+A preset is a tree written with the shorthands in `src/presets/build.ts`
+(ids come from a 3-letter prefix, so they stay the same). After adding or
+changing one, with `npm run dev` running:
+
+```bash
+npm run thumbnails [key …]   # headless Chrome → public/__mint/presets/<key>.png|jpg
+npm run manifest
+```
+
+Then sync the manifest to the backend. The backend's tests run every preset
+through its validator.
+
+## Performance budget (SB-08)
+
+Blocks add no JavaScript files to a page: the only scripts are Next/React's
+own runtime (168.6 KB gzip on a production build, the same for 1 or 20
+sections) and small inline scripts for the blocks that need them (tabs,
+carousel, gallery, countdown, overlays) on the pages that have them. Fonts
+load without blocking the first paint. Measured on `?view=demo` (Lighthouse
+12, mobile): performance 98–99, accessibility 100 in studio, bright, mono and
+bistro dark.
 
 ## Icons
 

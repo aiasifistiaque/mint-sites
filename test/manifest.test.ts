@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs';
+import { readFileSync, statSync } from 'fs';
 import path from 'path';
 import { describe, expect, it } from 'vitest';
 import { REGISTRY } from '@/blocks/registry';
@@ -6,11 +6,14 @@ import { buildManifest } from '@/manifest';
 
 describe('manifest', () => {
 	const m = buildManifest();
-	it('lists the 14 primitives + 3 overlays + saved sections, the themes, the icons and limits', () => {
-		expect(m.blocks.map(b => b.type)).toEqual(
-			['button', 'container', 'divider', 'drawer', 'embed', 'grid', 'heading', 'icon', 'image', 'link', 'modal', 'popover', 'section', 'section-ref', 'spacer', 'stack', 'text', 'video']
-		);
-		expect(m.themes.map(t => t.key)).toEqual(['bright', 'editorial', 'studio']);
+	it('lists the blocks (primitives, overlays, saved sections, SB-08’s catalogue), the themes, the icons and limits', () => {
+		expect(m.blocks.map(b => b.type)).toEqual([
+			'accordion', 'accordion-item', 'badge', 'breadcrumbs', 'button', 'card', 'carousel', 'container', 'countdown', 'divider', 'drawer',
+			'embed', 'form-placeholder', 'gallery', 'grid', 'header', 'heading', 'icon', 'image', 'link', 'logo', 'map', 'marquee', 'modal',
+			'nav-menu', 'popover', 'quote', 'section', 'section-ref', 'social-links', 'spacer', 'stack', 'stat', 'tab', 'tabs', 'text', 'video',
+		]);
+		expect(m.themes.map(t => t.key)).toEqual(['bistro', 'bright', 'calm', 'editorial', 'market', 'mono', 'studio']);
+		expect(m.presets.length).toBeGreaterThanOrEqual(30);
 		expect(m.icons.length).toBeGreaterThan(150);
 		expect(m.icons.length).toBeLessThanOrEqual(200);
 		expect(m.limits).toEqual({ maxNodes: 1500, maxDepth: 30, maxBytes: 524288 });
@@ -30,6 +33,13 @@ describe('manifest', () => {
 		for (const b of m.blocks) {
 			expect(m.icons, b.type).toContain(b.icon);
 			expect(REGISTRY[b.type]?.def).toBe(b);
+		}
+	});
+	it('every preset has a thumbnail file of at most 40 KB', () => {
+		for (const p of m.presets) {
+			expect(p.thumbnail, p.key).toMatch(/^\/__mint\/presets\/[a-z0-9-]+\.(png|jpg)$/);
+			const file = path.join(__dirname, '..', 'public', p.thumbnail);
+			expect(statSync(file).size, p.thumbnail).toBeLessThanOrEqual(40 * 1024);
 		}
 	});
 	it('presets only use known blocks with unique ids', () => {

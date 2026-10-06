@@ -10,6 +10,8 @@ const panelOrigins = (process.env.PANEL_ORIGINS || '')
 const nextConfig: NextConfig = {
 	reactStrictMode: true,
 	poweredByHeader: false,
+	// No dev badge on the fixture (preset thumbnails are shot from it).
+	devIndicators: false,
 	// The monorepo root has its own lockfile; this app is its own root.
 	turbopack: { root: path.join(__dirname) },
 	// No image optimizer: billed per image on Vercel, and every tenant's

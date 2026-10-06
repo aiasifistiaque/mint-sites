@@ -1,8 +1,11 @@
 // Presets: saved trees of blocks (D11) — sections people insert and then edit
 // freely. Ids here are fixed; the editor and the backend give inserted copies
-// fresh ones. The catalogue grows in SB-08; the backend seeds a new site's
-// home page with `header-simple` + `hero-centered` + `footer-simple` (SB-03).
+// fresh ones. The backend seeds a new site's home page with `header-simple` +
+// `hero-centered` + `footer-simple` (SB-03) — keep those three as they are;
+// the rest of the catalogue (SB-08) is in sections.ts.
 import type { Preset } from '@/types';
+import { SECTION_PRESETS } from './sections';
+import thumbnails from './thumbnails.json';
 
 const headerSimple: Preset = {
 	key: 'header-simple',
@@ -157,4 +160,7 @@ const footerSimple: Preset = {
 	],
 };
 
-export const PRESETS: Preset[] = [headerSimple, heroCentered, footerSimple];
+/** Thumbnails come from scripts/thumbnails.mjs (thumbnails.json: key → file). */
+const withThumb = (p: Preset): Preset => ({ ...p, thumbnail: (thumbnails as Record<string, string>)[p.key] || '' });
+
+export const PRESETS: Preset[] = [headerSimple, heroCentered, footerSimple, ...SECTION_PRESETS].map(withThumb);
