@@ -116,4 +116,75 @@
 		padding: 0.1em 0.35em;
 		border-radius: var(--mint-radius-sm);
 	}
+
+	/* Overlays (modal, drawer, popover): hidden until opened (src/render/overlays.ts).
+	   A dimmed scrim, never a blur. */
+	.mint-overlay {
+		padding: 0;
+		border: 0;
+		background: var(--mint-color-background);
+		color: var(--mint-color-foreground);
+		max-width: calc(100vw - 2rem);
+		overflow: auto;
+		overscroll-behavior: contain;
+	}
+	dialog.mint-overlay[open] {
+		position: fixed;
+		z-index: 50;
+	}
+	dialog.mint-overlay::backdrop {
+		background: rgb(0 0 0 / 0.5);
+	}
+	.mint-modal {
+		inset: 0;
+		margin: auto;
+		max-height: calc(100dvh - 2rem);
+		border-radius: var(--mint-radius-lg);
+		box-shadow: var(--mint-shadow-lg);
+	}
+	.mint-drawer {
+		inset: 0 0 0 auto;
+		margin: 0 0 0 auto;
+		height: 100dvh;
+		max-height: 100dvh;
+		max-width: 100vw;
+		box-shadow: var(--mint-shadow-lg);
+	}
+	.mint-drawer[data-side='left'] {
+		inset: 0 auto 0 0;
+		margin: 0 auto 0 0;
+	}
+	.mint-popover {
+		margin: 0;
+		border: 1px solid var(--mint-color-border);
+		border-radius: var(--mint-radius-md);
+		box-shadow: var(--mint-shadow-md);
+	}
+	@media (prefers-reduced-motion: no-preference) {
+		dialog.mint-modal[open] {
+			animation: mint-pop 160ms ease-out;
+		}
+		dialog.mint-drawer[open] {
+			animation: mint-slide-r 200ms ease-out;
+		}
+		dialog.mint-drawer[data-side='left'][open] {
+			animation-name: mint-slide-l;
+		}
+	}
+	@keyframes mint-pop {
+		from {
+			opacity: 0;
+			transform: scale(0.97);
+		}
+	}
+	@keyframes mint-slide-r {
+		from {
+			transform: translateX(100%);
+		}
+	}
+	@keyframes mint-slide-l {
+		from {
+			transform: translateX(-100%);
+		}
+	}
 }

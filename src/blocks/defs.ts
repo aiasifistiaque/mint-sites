@@ -4,12 +4,15 @@ import type { BlockDef } from '@/types';
 import { def as button } from './button/schema';
 import { def as container } from './container/schema';
 import { def as divider } from './divider/schema';
+import { def as drawer } from './drawer/schema';
 import { def as embed } from './embed/schema';
 import { def as grid } from './grid/schema';
 import { def as heading } from './heading/schema';
 import { def as icon } from './icon/schema';
 import { def as image } from './image/schema';
 import { def as link } from './link/schema';
+import { def as modal } from './modal/schema';
+import { def as popover } from './popover/schema';
 import { def as section } from './section/schema';
 import { def as spacer } from './spacer/schema';
 import { def as stack } from './stack/schema';
@@ -31,4 +34,7 @@ export const BLOCK_DEFS: BlockDef[] = [
 	image,
 	video,
 	embed,
+	modal,
+	drawer,
+	popover,
 ];

@@ -6,6 +6,7 @@ import { getTheme } from '@/themes';
 import { collectAnchors } from './actions';
 import { compileStyles } from './compileStyles';
 import { RenderTree } from './RenderTree';
+import { hasOverlays, OVERLAY_SCRIPT } from './overlays';
 import { fontHref, mergeTokens, tokensToCss } from './tokens';
 
 export type SiteDocumentProps = {
@@ -42,6 +43,7 @@ export function SiteDocument({ theme, tokens, colorScheme = 'light', header = []
 				</main>
 				{footer.length > 0 && <RenderTree nodes={footer} ctx={context} />}
 			</div>
+			{context.mode === 'live' && hasOverlays([all]) && <script dangerouslySetInnerHTML={{ __html: OVERLAY_SCRIPT }} />}
 		</>
 	);
 }

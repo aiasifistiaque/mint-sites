@@ -31,6 +31,17 @@ export function RenderTree({ nodes, ctx, registry = REGISTRY, depth = 0 }: Props
 	));
 }
 
+/** In the editor's canvas, an empty container still has somewhere to drop blocks. */
+function EmptySlot() {
+	return (
+		<div
+			data-mint-empty=''
+			className='flex min-h-16 min-w-24 flex-1 items-center justify-center rounded-md border border-dashed border-border p-3 text-xs text-muted-foreground'>
+			Drop blocks here
+		</div>
+	);
+}
+
 function RenderNode({ node, ctx, registry, depth }: { node: Node; ctx: RenderContext; registry: Record<string, BlockEntry>; depth: number }) {
 	if (!node || typeof node !== 'object') return null;
 	const entry = registry[node.type];
@@ -41,7 +52,11 @@ function RenderNode({ node, ctx, registry, depth }: { node: Node; ctx: RenderCon
 	if (id && ctx.anchors?.has(id)) attrs.id = anchorId(id);
 
 	const children = def.slots?.children ? (
-		<RenderTree nodes={node.children} ctx={ctx} registry={registry} depth={depth + 1} />
+		ctx.mode === 'edit' && !node.children?.length ? (
+			<EmptySlot />
+		) : (
+			<RenderTree nodes={node.children} ctx={ctx} registry={registry} depth={depth + 1} />
+		)
 	) : undefined;
 	const slots: Record<string, ReactNode> = {};
 	for (const name of Object.keys(def.slots || {}))

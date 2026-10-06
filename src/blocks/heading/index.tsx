@@ -15,12 +15,13 @@ const SIZE: Record<string, string> = {
 	'2xl': 'text-5xl md:text-6xl lg:text-7xl',
 };
 
-export default function Heading({ props, attrs }: BlockProps) {
+export default function Heading({ props, attrs, ctx }: BlockProps) {
 	const level = [1, 2, 3, 4].includes(props.level) ? (props.level as 1 | 2 | 3 | 4) : 2;
 	const Tag = `h${level}` as const;
 	return (
 		<Tag
 			{...attrs}
+			{...(ctx.mode === 'edit' && { 'data-mint-text': 'text' })}
 			className={cx('font-heading text-balance font-semibold tracking-tight', SIZE[props.size] ?? BY_LEVEL[level])}>
 			{str(props.text)}
 		</Tag>

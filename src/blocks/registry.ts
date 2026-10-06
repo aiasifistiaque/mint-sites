@@ -10,6 +10,8 @@ import Container from './container';
 import { def as containerDef } from './container/schema';
 import Divider from './divider';
 import { def as dividerDef } from './divider/schema';
+import Drawer from './drawer';
+import { def as drawerDef } from './drawer/schema';
 import Embed from './embed';
 import { def as embedDef } from './embed/schema';
 import Grid from './grid';
@@ -22,6 +24,10 @@ import Image from './image';
 import { def as imageDef } from './image/schema';
 import Link from './link';
 import { def as linkDef } from './link/schema';
+import Modal from './modal';
+import { def as modalDef } from './modal/schema';
+import Popover from './popover';
+import { def as popoverDef } from './popover/schema';
 import Section from './section';
 import { def as sectionDef } from './section/schema';
 import Spacer from './spacer';
@@ -48,6 +54,11 @@ const entries: BlockEntry[] = [
 	{ def: imageDef, Component: Image },
 	{ def: videoDef, Component: Video },
 	{ def: embedDef, Component: Embed },
+	// Overlays are server components too: the browser's <dialog> / popover do the work,
+	// plus a few lines of script only on pages that have one (src/render/overlays.ts).
+	{ def: modalDef, Component: Modal },
+	{ def: drawerDef, Component: Drawer },
+	{ def: popoverDef, Component: Popover },
 ];
 
 export const REGISTRY: Record<string, BlockEntry> = Object.fromEntries(entries.map(e => [e.def.type, e]));

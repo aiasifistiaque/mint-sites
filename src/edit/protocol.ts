@@ -10,6 +10,10 @@ export const PROTOCOL = 1;
 export type CanvasDesign = { theme: string; tokens: TokenOverrides; colorScheme: 'light' | 'dark' | 'system' };
 export type CanvasLayout = { header: Node[]; footer: Node[] } | null;
 export type Rect = { x: number; y: number; w: number; h: number };
+/** Where a dragged block would land: inside `parentId` (null = the page itself), in `slot`, at `index`. */
+export type DropTarget = { parentId: string | null; slot?: string; index: number };
+/** What's being dragged from the Add panel: the types of its top-level blocks (a preset may have several). */
+export type DragItem = { types: string[]; label: string };
 
 /** panel → canvas */
 export type PanelMessage =
@@ -22,6 +26,8 @@ export type PanelMessage =
 			/** page id → path, for { type: 'page' } actions */
 			links?: Record<string, string>;
 			theme: 'light' | 'dark';
+			/** a role that can't change the site: no dragging or typing on the canvas */
+			readOnly?: boolean;
 	  }
 	| { mint: 1; type: 'tree'; tree: Node[]; layout?: CanvasLayout }
 	| { mint: 1; type: 'design'; design: CanvasDesign }
@@ -29,7 +35,12 @@ export type PanelMessage =
 	| { mint: 1; type: 'theme'; theme: 'light' | 'dark' }
 	| { mint: 1; type: 'select'; id: string | null }
 	| { mint: 1; type: 'hover'; id: string | null }
-	| { mint: 1; type: 'open'; id: string | null };
+	/** show an overlay (pop-up, drawer, popover) on the canvas; null closes it */
+	| { mint: 1; type: 'open'; id: string | null }
+	/** a drag from the Add panel is over the canvas, at x / y in the canvas's own viewport */
+	| { mint: 1; type: 'drag'; x: number; y: number; item: DragItem }
+	/** the drag left the canvas or ended: stop drawing the drop line */
+	| { mint: 1; type: 'dragend' };
 
 /** canvas → panel */
 export type CanvasMessage =
@@ -38,7 +49,15 @@ export type CanvasMessage =
 	| { mint: 1; type: 'hover'; id: string | null }
 	/** selected + hovered, in the canvas viewport's coordinates, after layout or scroll */
 	| { mint: 1; type: 'rects'; rects: Record<string, Rect> }
-	| { mint: 1; type: 'height'; px: number };
+	| { mint: 1; type: 'height'; px: number }
+	/** answer to 'drag': where it would land, or why it can't (null target) */
+	| { mint: 1; type: 'dropTarget'; target: DropTarget | null; reason?: string }
+	/** a block dragged by its handle on the canvas was dropped */
+	| { mint: 1; type: 'move'; id: string; parentId: string | null; slot?: string; index: number }
+	/** text typed straight onto the canvas (double click a heading, text, button or link) */
+	| { mint: 1; type: 'text'; id: string; prop: string; value: string }
+	/** a shortcut pressed while the canvas has the focus — the panel handles it */
+	| { mint: 1; type: 'key'; key: string; meta: boolean; ctrl: boolean; shift: boolean; alt: boolean };
 
 export const isPanelMessage = (d: unknown): d is PanelMessage =>
 	!!d && typeof d === 'object' && (d as { mint?: unknown }).mint === PROTOCOL && typeof (d as { type?: unknown }).type === 'string';

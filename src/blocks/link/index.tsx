@@ -8,22 +8,23 @@ const TONE: Record<string, string> = {
 };
 const UNDERLINE: Record<string, string> = { hover: 'hover:underline', always: 'underline', none: 'no-underline' };
 
-export default function Link({ props, attrs, action }: BlockProps) {
+export default function Link({ props, attrs, action, ctx }: BlockProps) {
+	const edit = ctx.mode === 'edit' ? { 'data-mint-text': 'text' } : {};
 	const className = cx('underline-offset-4 transition-colors', TONE[props.tone] ?? TONE.foreground, UNDERLINE[props.underline] ?? UNDERLINE.hover);
 	if (action?.href)
 		return (
-			<a {...attrs} {...action} className={className}>
+			<a {...attrs} {...edit} {...action} className={className}>
 				{str(props.text)}
 			</a>
 		);
 	if (action)
 		return (
-			<button {...attrs} {...action} type='button' className={cx(className, 'cursor-pointer')}>
+			<button {...attrs} {...edit} {...action} type='button' className={cx(className, 'cursor-pointer')}>
 				{str(props.text)}
 			</button>
 		);
 	return (
-		<span {...attrs} className={className}>
+		<span {...attrs} {...edit} className={className}>
 			{str(props.text)}
 		</span>
 	);

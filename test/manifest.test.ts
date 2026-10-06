@@ -6,9 +6,9 @@ import { buildManifest } from '@/manifest';
 
 describe('manifest', () => {
 	const m = buildManifest();
-	it('lists the 14 primitives, a theme, the icons and limits', () => {
+	it('lists the 14 primitives + 3 overlays, a theme, the icons and limits', () => {
 		expect(m.blocks.map(b => b.type)).toEqual(
-			['button', 'container', 'divider', 'embed', 'grid', 'heading', 'icon', 'image', 'link', 'section', 'spacer', 'stack', 'text', 'video']
+			['button', 'container', 'divider', 'drawer', 'embed', 'grid', 'heading', 'icon', 'image', 'link', 'modal', 'popover', 'section', 'spacer', 'stack', 'text', 'video']
 		);
 		expect(m.themes.map(t => t.key)).toEqual(['studio']);
 		expect(m.icons.length).toBeGreaterThan(150);

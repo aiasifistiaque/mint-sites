@@ -11,7 +11,7 @@ const VARIANT: Record<string, string> = {
 };
 const SIZE: Record<string, string> = { sm: 'h-9 px-3 text-sm', md: 'h-11 px-5 text-sm', lg: 'h-12 px-7 text-base' };
 
-export default function Button({ props, attrs, action }: BlockProps) {
+export default function Button({ props, attrs, action, ctx }: BlockProps) {
 	const icon = props.icon ? <SvgIcon name={props.icon} size={props.size === 'lg' ? 20 : 16} /> : null;
 	const className = cx(
 		'mint-btn inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap transition',
@@ -22,7 +22,7 @@ export default function Button({ props, attrs, action }: BlockProps) {
 	const content = (
 		<>
 			{props.iconPosition === 'start' && icon}
-			<span>{str(props.label)}</span>
+			<span {...(ctx.mode === 'edit' && { 'data-mint-text': 'label' })}>{str(props.label)}</span>
 			{props.iconPosition !== 'start' && icon}
 		</>
 	);
