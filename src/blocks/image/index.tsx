@@ -1,4 +1,3 @@
-import NextImage from 'next/image';
 import { isSafeMediaUrl } from '@/render/styleSchema';
 import type { BlockProps } from '../types';
 import { cx, EditHint, oneOf, str } from '../util';
@@ -14,7 +13,7 @@ const RADIUS: Record<string, string> = {
 };
 const MEDIA_HOSTS = (process.env.NEXT_PUBLIC_MEDIA_HOSTS || '').split(',').filter(Boolean);
 
-/** next/image only for hosts configured in next.config (MEDIA_HOSTS); a plain <img> otherwise. */
+/** Next's image optimizer only for hosts configured in next.config (MEDIA_HOSTS). */
 const optimizable = (src: string) => {
 	try {
 		const u = new URL(src);
@@ -23,6 +22,30 @@ const optimizable = (src: string) => {
 		return false;
 	}
 };
+
+// next/image's default device widths. The <img> asks the optimizer directly
+// (/_next/image?url=…&w=…) instead of using next/image, which is a client
+// component and would ship its JS on every page, images or not.
+const WIDTHS = [640, 750, 828, 1080, 1200, 1920, 2048];
+const SIZES = '(min-width: 1024px) 50vw, 100vw';
+const optimized = (src: string, w: number) => `/_next/image?url=${encodeURIComponent(src)}&w=${w}&q=75`;
+
+function Img({ src, alt, priority, className }: { src: string; alt: string; priority: boolean; className: string }) {
+	const opt = optimizable(src);
+	return (
+		// eslint-disable-next-line @next/next/no-img-element
+		<img
+			src={opt ? optimized(src, 1200) : src}
+			srcSet={opt ? WIDTHS.map(w => `${optimized(src, w)} ${w}w`).join(', ') : undefined}
+			sizes={opt ? SIZES : undefined}
+			alt={alt}
+			loading={priority ? 'eager' : 'lazy'}
+			fetchPriority={priority ? 'high' : undefined}
+			decoding='async'
+			className={className}
+		/>
+	);
+}
 
 /** "placeholder:<w>x<h>:<label>" → its size and label (the AI uses these before real pictures exist). */
 export const parsePlaceholder = (src: string) => {
@@ -51,21 +74,14 @@ export default function Image({ props, attrs, action, ctx }: BlockProps) {
 		);
 	} else if (isSafeMediaUrl(src)) {
 		const alt = str(props.alt);
+		const priority = !!props.priority;
 		picture =
 			ratio !== 'auto' ? (
 				<div className={cx('relative w-full overflow-hidden', radius)} style={aspect}>
-					{optimizable(src) ? (
-						<NextImage src={src} alt={alt} fill sizes='(min-width: 1024px) 50vw, 100vw' priority={!!props.priority} className={fit} />
-					) : (
-						// eslint-disable-next-line @next/next/no-img-element
-						<img src={src} alt={alt} loading={props.priority ? 'eager' : 'lazy'} className={cx('absolute inset-0 h-full w-full', fit)} />
-					)}
+					<Img src={src} alt={alt} priority={priority} className={cx('absolute inset-0 h-full w-full', fit)} />
 				</div>
-			) : optimizable(src) ? (
-				<NextImage src={src} alt={alt} width={1600} height={1000} sizes='(min-width: 1024px) 50vw, 100vw' priority={!!props.priority} className={cx('h-auto w-full', radius)} />
 			) : (
-				// eslint-disable-next-line @next/next/no-img-element
-				<img src={src} alt={alt} loading={props.priority ? 'eager' : 'lazy'} className={cx('h-auto w-full', radius)} />
+				<Img src={src} alt={alt} priority={priority} className={cx('h-auto w-full', radius)} />
 			);
 	} else return <EditHint ctx={ctx} attrs={attrs}>Choose an image</EditHint>;
 
