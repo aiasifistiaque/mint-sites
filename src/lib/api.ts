@@ -2,7 +2,7 @@
 // call carries x-mint-renderer so the backend knows it's the renderer (one
 // server drawing every site would otherwise hit the public API's per-IP limit).
 import { cache } from 'react';
-import type { Node, TokenOverrides } from '@/types';
+import type { Node, SavedSection, TokenOverrides } from '@/types';
 
 export const API = (process.env.MINT_API_URL || 'http://localhost:5031').replace(/\/$/, '');
 
@@ -36,7 +36,8 @@ export type RenderData = {
 		colorScheme: 'light' | 'dark' | 'system';
 		origin: string;
 	};
-	design: { theme: string; tokens: TokenOverrides; colorScheme: 'light' | 'dark' | 'system' };
+	/** sections: only the saved sections this page and its layout use */
+	design: { theme: string; tokens: TokenOverrides; colorScheme: 'light' | 'dark' | 'system'; sections?: Record<string, SavedSection> };
 	layout: { header: Node[]; footer: Node[] } | null;
 	page: { id: string; path: string; name: string; tree: Node[]; seo: SeoResolved };
 	data: { record?: Record<string, unknown>; nodes: Record<string, unknown>; contents: Record<string, unknown> };

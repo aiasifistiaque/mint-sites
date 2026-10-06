@@ -189,7 +189,9 @@ export type PropKind =
 	| 'model'
 	| 'field'
 	| 'list'
-	| 'source';
+	| 'source'
+	/** a saved section's id (the design's `sections`) */
+	| 'section';
 
 export type PropDef = {
 	key: string;
@@ -259,6 +261,9 @@ export type Theme = {
 	preview: { bg: string; fg: string; primary: string; font: string };
 };
 
+/** A section saved in the design (SiteDesign.sections), placed with section-ref blocks. */
+export type SavedSection = { name: string; tree: Node[] };
+
 export type Limits = { maxNodes: number; maxDepth: number; maxBytes: number };
 
 export type Manifest = {
@@ -267,6 +272,7 @@ export type Manifest = {
 	presets: Preset[];
 	themes: Theme[];
 	tokens: Record<string, unknown>;
+	fonts: { google: { family: string; category: string; weights: number[] }[]; system: string[] };
 	style: Record<string, unknown>;
 	icons: string[];
 	embeds: string[];
@@ -283,4 +289,8 @@ export type RenderContext = {
 	pages?: Record<string, string>;
 	/** ids that something links to (scroll / #node:) — they get an html id */
 	anchors?: Set<string>;
+	/** the design's saved sections, for section-ref blocks */
+	sections?: Record<string, SavedSection>;
+	/** drawing a saved section's own blocks (a saved section never holds another) */
+	inSection?: boolean;
 };

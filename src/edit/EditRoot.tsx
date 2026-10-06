@@ -191,7 +191,9 @@ export default function EditRoot({ origins, manifestVersion }: { origins: string
 		};
 	}, [selected, hovered, state, openId, post]);
 
-	const idAt = (target: EventTarget | null) => (target instanceof Element ? target.closest<HTMLElement>('[data-n]')?.dataset.n ?? null : null);
+	/** The block under the pointer — inside a saved section, the section-ref block itself. */
+	const idAt = (target: EventTarget | null) =>
+		target instanceof Element ? (target.closest<HTMLElement>('[data-mint-ref]') || target.closest<HTMLElement>('[data-n]'))?.dataset.n ?? null : null;
 
 	const onClickCapture = (e: React.MouseEvent) => {
 		// Nothing on the canvas navigates, submits or opens: a click selects.
@@ -327,6 +329,7 @@ export default function EditRoot({ origins, manifestVersion }: { origins: string
 				header={state.layout?.header}
 				tree={state.tree}
 				footer={state.layout?.footer}
+				sections={state.design.sections}
 				ctx={{ mode: 'edit', pages: state.links }}
 			/>
 			{openId && (

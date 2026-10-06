@@ -30,6 +30,8 @@ import Popover from './popover';
 import { def as popoverDef } from './popover/schema';
 import Section from './section';
 import { def as sectionDef } from './section/schema';
+import SectionRef from './section-ref';
+import { def as sectionRefDef } from './section-ref/schema';
 import Spacer from './spacer';
 import { def as spacerDef } from './spacer/schema';
 import Stack from './stack';
@@ -54,6 +56,7 @@ const entries: BlockEntry[] = [
 	{ def: imageDef, Component: Image },
 	{ def: videoDef, Component: Video },
 	{ def: embedDef, Component: Embed },
+	{ def: sectionRefDef, Component: SectionRef },
 	// Overlays are server components too: the browser's <dialog> / popover do the work,
 	// plus a few lines of script only on pages that have one (src/render/overlays.ts).
 	{ def: modalDef, Component: Modal },

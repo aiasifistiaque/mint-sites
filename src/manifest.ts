@@ -8,7 +8,7 @@ import { EMBED_HOSTS } from '@/blocks/embed/schema';
 import { ICON_NAMES } from '@/blocks/icon/icons';
 import { PRESETS } from '@/presets';
 import { styleManifest } from '@/render/styleSchema';
-import { TOKENS_SCHEMA } from '@/render/tokens';
+import { FONTS_MANIFEST, TOKENS_SCHEMA } from '@/render/tokens';
 import { THEMES } from '@/themes';
 import type { Manifest } from '@/types';
 
@@ -32,6 +32,7 @@ export function buildManifest(): Manifest {
 		presets: [...PRESETS].sort((a, b) => a.key.localeCompare(b.key)),
 		themes: [...THEMES].sort((a, b) => a.key.localeCompare(b.key)),
 		tokens: TOKENS_SCHEMA,
+		fonts: FONTS_MANIFEST,
 		style: styleManifest(),
 		icons: ICON_NAMES,
 		embeds: [...EMBED_HOSTS].sort(),

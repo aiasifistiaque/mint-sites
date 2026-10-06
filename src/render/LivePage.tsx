@@ -15,6 +15,7 @@ export function LivePage({ data, slug, tree }: { data: RenderData; slug: string;
 				header={data.layout?.header}
 				tree={tree ?? data.page.tree}
 				footer={data.layout?.footer}
+				sections={data.design.sections}
 				ctx={{ mode: 'live', pages: data.links }}
 			/>
 			{data.tags.tracker && (

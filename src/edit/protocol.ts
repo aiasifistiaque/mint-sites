@@ -3,11 +3,17 @@
 // src/app/site-builder/_components/protocol.ts) — change both together.
 // Every message is { mint: 1, type, …payload }; each side ignores messages from
 // any origin it doesn't trust. The canvas never saves: the panel owns the draft.
-import type { Node, TokenOverrides } from '@/types';
+import type { Node, SavedSection, TokenOverrides } from '@/types';
 
 export const PROTOCOL = 1;
 
-export type CanvasDesign = { theme: string; tokens: TokenOverrides; colorScheme: 'light' | 'dark' | 'system' };
+export type CanvasDesign = {
+	theme: string;
+	tokens: TokenOverrides;
+	colorScheme: 'light' | 'dark' | 'system';
+	/** the draft's saved sections, for section-ref blocks */
+	sections?: Record<string, SavedSection>;
+};
 export type CanvasLayout = { header: Node[]; footer: Node[] } | null;
 export type Rect = { x: number; y: number; w: number; h: number };
 /** Where a dragged block would land: inside `parentId` (null = the page itself), in `slot`, at `index`. */

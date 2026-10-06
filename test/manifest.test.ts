@@ -6,14 +6,25 @@ import { buildManifest } from '@/manifest';
 
 describe('manifest', () => {
 	const m = buildManifest();
-	it('lists the 14 primitives + 3 overlays, a theme, the icons and limits', () => {
+	it('lists the 14 primitives + 3 overlays + saved sections, the themes, the icons and limits', () => {
 		expect(m.blocks.map(b => b.type)).toEqual(
-			['button', 'container', 'divider', 'drawer', 'embed', 'grid', 'heading', 'icon', 'image', 'link', 'modal', 'popover', 'section', 'spacer', 'stack', 'text', 'video']
+			['button', 'container', 'divider', 'drawer', 'embed', 'grid', 'heading', 'icon', 'image', 'link', 'modal', 'popover', 'section', 'section-ref', 'spacer', 'stack', 'text', 'video']
 		);
-		expect(m.themes.map(t => t.key)).toEqual(['studio']);
+		expect(m.themes.map(t => t.key)).toEqual(['bright', 'editorial', 'studio']);
 		expect(m.icons.length).toBeGreaterThan(150);
 		expect(m.icons.length).toBeLessThanOrEqual(200);
 		expect(m.limits).toEqual({ maxNodes: 1500, maxDepth: 30, maxBytes: 524288 });
+	});
+	it('every theme has every token, and only fonts from the list', () => {
+		const google = new Set(m.fonts.google.map(f => f.family));
+		const studio = m.themes.find(t => t.key === 'studio')!;
+		for (const t of m.themes) {
+			for (const group of ['colors', 'radius', 'shadow', 'space'] as const)
+				expect(Object.keys(t.tokens[group]).sort(), `${t.key} ${group}`).toEqual(Object.keys(studio.tokens[group]).sort());
+			for (const f of Object.values(t.tokens.fonts)) expect(google, `${t.key}: ${f.family}`).toContain(f.family);
+			expect(t.preview.font, t.key).toBe(t.tokens.fonts.heading.family);
+		}
+		expect(m.fonts.google.length).toBeGreaterThanOrEqual(40);
 	});
 	it('every block icon exists, every block is in the registry', () => {
 		for (const b of m.blocks) {

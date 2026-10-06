@@ -11,6 +11,7 @@ import {
 	type TokenOverrides,
 	type Tokens,
 } from '@/types';
+import { availableWeights, FONT_BY_FAMILY, FONTS } from '@/themes/fonts';
 
 const COLOR = /^(#[0-9a-f]{3,8}|(rgb|rgba|hsl|hsla|oklch|oklab|lab|lch)\([0-9.,%\s/+-]+\))$/i;
 const LENGTH = /^(0|-?[0-9]*\.?[0-9]+(px|rem|em|%))$/;
@@ -107,11 +108,15 @@ export function tokensToCss(t: Tokens, scheme: 'toggle' | 'system' | 'light' | '
 	return css;
 }
 
-/** Google Fonts stylesheet URL for the tokens' families (runtime, never at build — fails on Vercel). */
+/**
+ * Google Fonts stylesheet URL for the tokens' families (runtime, never at build
+ * — fails on Vercel). Only families on the curated list (themes/fonts.ts), and
+ * only weights they have: one bad family or weight fails the whole stylesheet.
+ */
 export function fontHref(t: Tokens): string | null {
 	const byFamily = new Map<string, Set<number>>();
 	for (const f of Object.values(t.fonts)) {
-		if (SYSTEM_FAMILIES.has(f.family) || !isFamily(f.family)) continue;
+		if (!FONT_BY_FAMILY.has(f.family)) continue;
 		const set = byFamily.get(f.family) || new Set<number>();
 		f.weights.forEach(w => set.add(w));
 		byFamily.set(f.family, set);
@@ -120,7 +125,7 @@ export function fontHref(t: Tokens): string | null {
 	const families = [...byFamily.entries()]
 		.sort(([a], [b]) => a.localeCompare(b))
 		.map(([name, w]) => {
-			const weights = [...w].sort((a, b) => a - b);
+			const weights = availableWeights(name, [...w]);
 			return `family=${name.replace(/ /g, '+')}${weights.length ? `:wght@${weights.join(';')}` : ''}`;
 		});
 	return `https://fonts.googleapis.com/css2?${families.join('&')}&display=swap`;
@@ -136,3 +141,6 @@ export const TOKENS_SCHEMA = {
 	container: { kind: 'int', min: 640, max: 1920, unit: 'px' },
 	button: { radius: RADIUS_TOKENS, weight: [400, 500, 600, 700, 800], uppercase: 'boolean' },
 };
+
+/** The `fonts` part of the manifest: the families a design may use, and the system stacks. */
+export const FONTS_MANIFEST = { google: FONTS, system: [...SYSTEM_FAMILIES] };

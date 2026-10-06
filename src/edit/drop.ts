@@ -107,13 +107,14 @@ export function findDrop(x: number, y: number, types: string[], tree: Node[], mo
 
 	const hit = document.elementFromPoint(x, y);
 	if (hit && !main.contains(hit)) {
-		if (hit.closest('.mint-site')) return { placement: null, reason: 'The header and footer can’t be changed here yet.' };
+		if (hit.closest('.mint-site')) return { placement: null, reason: 'The header and footer are changed on their own — open them under Pages.' };
 		return { placement: null };
 	}
 	if (!hit && y < mainRect.bottom) return { placement: null };
 
 	const movingEl = moving ? elementOf(moving) : null;
-	let el: HTMLElement | null = hit ? hit.closest<HTMLElement>('[data-n]') : null;
+	// Inside a saved section: its blocks aren't this page's — drop around the section-ref block.
+	let el: HTMLElement | null = hit ? hit.closest<HTMLElement>('[data-mint-ref]') || hit.closest<HTMLElement>('[data-n]') : null;
 	if (el && !main.contains(el)) el = null;
 	if (movingEl && el && movingEl.contains(el)) el = movingEl;
 

@@ -2,6 +2,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { collectAnchors } from '@/render/actions';
 import { RenderTree } from '@/render/RenderTree';
+import { SiteDocument } from '@/render/SiteDocument';
 import type { BlockEntry } from '@/blocks/types';
 import type { Node, RenderContext } from '@/types';
 
@@ -82,5 +83,33 @@ describe('RenderTree', () => {
 		expect(out).not.toContain('javascript');
 		expect(out).toContain('href="https://x.com" target="_blank" rel="noopener noreferrer"');
 		expect(out).toContain('<section data-n="target01" id="n-target01"');
+	});
+
+	it('draws saved sections where section-ref blocks place them, with their styles', () => {
+		const sections = {
+			cta00001: { name: 'Call to action', tree: [{ id: 'ctahead1', type: 'heading', props: { text: 'Join us' }, style: { md: { color: 'primary' as const } } }] },
+			unused01: { name: 'Unused', tree: [{ id: 'unusedh1', type: 'heading', props: { text: 'Never drawn' } }] },
+		};
+		const tree: Node[] = [
+			{ id: 'ref00001', type: 'section-ref', props: { section: 'cta00001' } },
+			{ id: 'ref00002', type: 'section-ref', props: { section: 'gone0001' } },
+		];
+		const out = renderToStaticMarkup(<SiteDocument tree={tree} sections={sections} />);
+		expect(out).toContain('<div data-n="ref00001"><h2 data-n="ctahead1"');
+		expect(out).toContain('Join us');
+		expect(out).toContain('@media (min-width:768px){[data-n="ctahead1"]{color:var(--mint-color-primary)}}');
+		expect(out).not.toContain('Never drawn');
+		expect(out).not.toContain('ref00002'); // a deleted section draws nothing on the live site
+		// In the editor: marked so a click selects the section-ref, and a hint where it's missing.
+		const edit = renderToStaticMarkup(<SiteDocument tree={tree} sections={sections} ctx={{ mode: 'edit' }} />);
+		expect(edit).toContain('<div data-n="ref00001" data-mint-ref="">');
+		expect(edit).toContain('This saved section was deleted');
+	});
+
+	it('never draws a saved section inside a saved section', () => {
+		const sections = { outer001: { name: 'Outer', tree: [{ id: 'inref001', type: 'section-ref', props: { section: 'outer001' } }] } };
+		const out = renderToStaticMarkup(<SiteDocument tree={[{ id: 'ref00001', type: 'section-ref', props: { section: 'outer001' } }]} sections={sections} />);
+		expect(out).toContain('data-n="ref00001"');
+		expect(out).not.toContain('inref001');
 	});
 });

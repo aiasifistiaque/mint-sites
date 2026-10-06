@@ -47,4 +47,12 @@ describe('tokens', () => {
 		});
 		expect(fontHref(system)).toBeNull();
 	});
+
+	it('asks only for listed families, and only weights they have', () => {
+		const t = mergeTokens(studio.tokens, {
+			fonts: { heading: { family: 'Bebas Neue', weights: [600, 700] }, body: { family: 'Not On The List' }, mono: { family: 'Space Mono', weights: [500] } },
+		});
+		// Bebas Neue has 400 only, Space Mono 400 / 700 (500 → the closest, 400); an unknown family isn't asked for.
+		expect(fontHref(t)).toBe('https://fonts.googleapis.com/css2?family=Bebas+Neue:wght@400&family=Space+Mono:wght@400&display=swap');
+	});
 });

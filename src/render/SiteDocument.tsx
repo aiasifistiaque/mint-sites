@@ -1,7 +1,7 @@
 // Everything one page of a site needs: the theme's font stylesheet, the token
 // variables, one <style> with every node's compiled styles, and the header,
 // page and footer trees inside a themed wrapper.
-import type { Node, RenderContext, TokenOverrides } from '@/types';
+import type { Node, RenderContext, SavedSection, TokenOverrides } from '@/types';
 import { getTheme } from '@/themes';
 import { collectAnchors } from './actions';
 import { compileStyles } from './compileStyles';
@@ -17,14 +17,35 @@ export type SiteDocumentProps = {
 	header?: Node[];
 	tree: Node[];
 	footer?: Node[];
-	ctx?: Omit<RenderContext, 'anchors'>;
+	/** the design's saved sections (only the ones these trees use are drawn) */
+	sections?: Record<string, SavedSection> | null;
+	ctx?: Omit<RenderContext, 'anchors' | 'sections'>;
 };
 
-export function SiteDocument({ theme, tokens, colorScheme = 'light', header = [], tree, footer = [], ctx }: SiteDocumentProps) {
+/** The saved sections the trees place (section-ref blocks), by id. */
+export function usedSections(trees: Node[][], sections: Record<string, SavedSection> | null | undefined): Record<string, SavedSection> {
+	const out: Record<string, SavedSection> = {};
+	if (!sections) return out;
+	const visit = (nodes?: Node[]) => {
+		if (!Array.isArray(nodes)) return;
+		for (const n of nodes) {
+			const id = n?.type === 'section-ref' ? n.props?.section : null;
+			if (typeof id === 'string' && Object.hasOwn(sections, id) && Array.isArray(sections[id]?.tree)) out[id] = sections[id];
+			visit(n?.children);
+			if (n?.slots) Object.values(n.slots).forEach(visit);
+		}
+	};
+	trees.forEach(visit);
+	return out;
+}
+
+export function SiteDocument({ theme, tokens, colorScheme = 'light', header = [], tree, footer = [], sections, ctx }: SiteDocumentProps) {
 	const merged = mergeTokens(getTheme(theme).tokens, tokens);
 	const href = fontHref(merged);
 	const all = [...header, ...tree, ...footer];
-	const context: RenderContext = { mode: 'live', ...ctx, anchors: collectAnchors([all]) };
+	const used = usedSections([all], sections);
+	const savedTrees = Object.values(used).map(s => s.tree);
+	const context: RenderContext = { mode: 'live', ...ctx, anchors: collectAnchors([all, ...savedTrees]), sections: used };
 	return (
 		<>
 			{href && (
@@ -35,7 +56,7 @@ export function SiteDocument({ theme, tokens, colorScheme = 'light', header = []
 				</>
 			)}
 			<style dangerouslySetInnerHTML={{ __html: tokensToCss(merged, colorScheme === 'system' ? 'system' : 'toggle') }} />
-			<style data-mint-nodes='' dangerouslySetInnerHTML={{ __html: compileStyles(all) }} />
+			<style data-mint-nodes='' dangerouslySetInnerHTML={{ __html: compileStyles([...all, ...savedTrees.flat()]) }} />
 			<div className='mint-site flex flex-col' {...(colorScheme !== 'system' ? { 'data-theme': colorScheme } : {})}>
 				{header.length > 0 && <RenderTree nodes={header} ctx={context} />}
 				<main className='flex-1'>
