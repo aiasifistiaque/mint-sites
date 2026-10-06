@@ -8,6 +8,12 @@ const mediaHosts = (process.env.MEDIA_HOSTS || '')
 	.map(h => h.trim())
 	.filter(Boolean);
 
+// The tenant panel's addresses: only they may frame the editor's canvas.
+const panelOrigins = (process.env.PANEL_ORIGINS || '')
+	.split(',')
+	.map(o => o.trim().replace(/\/$/, ''))
+	.filter(Boolean);
+
 const nextConfig: NextConfig = {
 	reactStrictMode: true,
 	poweredByHeader: false,
@@ -17,6 +23,16 @@ const nextConfig: NextConfig = {
 		remotePatterns: mediaHosts.map(hostname => ({ protocol: 'https' as const, hostname })),
 	},
 	env: { NEXT_PUBLIC_MEDIA_HOSTS: mediaHosts.join(',') },
+	async headers() {
+		return [
+			{
+				source: '/__mint/edit',
+				headers: [{ key: 'Content-Security-Policy', value: `frame-ancestors ${panelOrigins.join(' ') || "'none'"}` }],
+			},
+			// Sites themselves are never framed by anyone.
+			{ source: '/((?!__mint/edit).*)', headers: [{ key: 'X-Frame-Options', value: 'DENY' }] },
+		];
+	},
 };
 
 export default nextConfig;
