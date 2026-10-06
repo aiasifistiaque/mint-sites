@@ -1,0 +1,57 @@
+import type { Theme } from '@/types';
+
+// Clean business look: neutral greys, an indigo primary, Inter throughout.
+export const studio: Theme = {
+	key: 'studio',
+	label: 'Studio',
+	description: 'Clean and modern — neutral greys, an indigo accent and Inter. Fits most business sites.',
+	preview: { bg: '#ffffff', fg: '#0f172a', primary: '#4f46e5', font: 'Inter' },
+	tokens: {
+		colors: {
+			background: { light: '#ffffff', dark: '#0b0d12' },
+			foreground: { light: '#0f172a', dark: '#e8eaf0' },
+			muted: { light: '#f4f5f7', dark: '#161a22' },
+			'muted-foreground': { light: '#5b6474', dark: '#9aa3b2' },
+			primary: { light: '#4f46e5', dark: '#8b85ff' },
+			'primary-foreground': { light: '#ffffff', dark: '#0b0d12' },
+			secondary: { light: '#eef0f4', dark: '#1d2230' },
+			'secondary-foreground': { light: '#0f172a', dark: '#e8eaf0' },
+			accent: { light: '#e0e7ff', dark: '#252a4a' },
+			'accent-foreground': { light: '#312e81', dark: '#d6dbff' },
+			card: { light: '#ffffff', dark: '#11141b' },
+			'card-foreground': { light: '#0f172a', dark: '#e8eaf0' },
+			border: { light: '#e3e6ec', dark: '#262b37' },
+			ring: { light: '#4f46e5', dark: '#8b85ff' },
+			success: { light: '#15803d', dark: '#4ade80' },
+			warning: { light: '#b45309', dark: '#fbbf24' },
+			danger: { light: '#b91c1c', dark: '#f87171' },
+		},
+		fonts: {
+			heading: { family: 'Inter', weights: [500, 600, 700] },
+			body: { family: 'Inter', weights: [400, 500, 600] },
+			mono: { family: 'JetBrains Mono', weights: [400] },
+		},
+		radius: { none: '0px', sm: '0.25rem', md: '0.5rem', lg: '0.75rem', xl: '1.25rem', full: '9999px' },
+		shadow: {
+			none: 'none',
+			sm: '0 1px 2px rgb(15 23 42 / 0.06)',
+			md: '0 4px 12px rgb(15 23 42 / 0.08)',
+			lg: '0 16px 40px rgb(15 23 42 / 0.12)',
+		},
+		space: {
+			'0': '0rem',
+			'1': '0.25rem',
+			'2': '0.5rem',
+			'3': '0.75rem',
+			'4': '1rem',
+			'6': '1.5rem',
+			'8': '2rem',
+			'12': '3rem',
+			'16': '4rem',
+			'24': '6rem',
+			'32': '8rem',
+		},
+		container: 1200,
+		button: { radius: 'md', weight: 600, uppercase: false },
+	},
+};

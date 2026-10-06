@@ -1,0 +1,119 @@
+@import 'tailwindcss';
+
+/* Theme tokens (src/render/tokens.ts writes the --mint-* variables per site)
+   mapped into Tailwind, so blocks say bg-primary, text-foreground, rounded-md,
+   shadow-md, font-heading, and p-4 = 4 steps of the theme's space scale.
+   `inline` matters: utilities get var(--mint-…) itself, so a dark wrapper's
+   values apply. Hand-written CSS below must use --mint-* too, never --color-*
+   (those resolve once, at :root). */
+@theme inline {
+	--color-background: var(--mint-color-background);
+	--color-foreground: var(--mint-color-foreground);
+	--color-muted: var(--mint-color-muted);
+	--color-muted-foreground: var(--mint-color-muted-foreground);
+	--color-primary: var(--mint-color-primary);
+	--color-primary-foreground: var(--mint-color-primary-foreground);
+	--color-secondary: var(--mint-color-secondary);
+	--color-secondary-foreground: var(--mint-color-secondary-foreground);
+	--color-accent: var(--mint-color-accent);
+	--color-accent-foreground: var(--mint-color-accent-foreground);
+	--color-card: var(--mint-color-card);
+	--color-card-foreground: var(--mint-color-card-foreground);
+	--color-border: var(--mint-color-border);
+	--color-ring: var(--mint-color-ring);
+	--color-success: var(--mint-color-success);
+	--color-warning: var(--mint-color-warning);
+	--color-danger: var(--mint-color-danger);
+
+	--font-heading: var(--mint-font-heading);
+	--font-body: var(--mint-font-body);
+	--font-mono: var(--mint-font-mono);
+	--font-sans: var(--mint-font-body);
+
+	--radius-sm: var(--mint-radius-sm);
+	--radius-md: var(--mint-radius-md);
+	--radius-lg: var(--mint-radius-lg);
+	--radius-xl: var(--mint-radius-xl);
+
+	--shadow-sm: var(--mint-shadow-sm);
+	--shadow-md: var(--mint-shadow-md);
+	--shadow-lg: var(--mint-shadow-lg);
+
+	--spacing: var(--mint-space-1, 0.25rem);
+}
+
+@layer base {
+	*,
+	::before,
+	::after {
+		border-color: var(--mint-color-border);
+	}
+	:focus-visible {
+		outline: 2px solid var(--mint-color-ring);
+		outline-offset: 2px;
+	}
+}
+
+@layer components {
+	.mint-site {
+		min-height: 100dvh;
+		background: var(--mint-color-background);
+		color: var(--mint-color-foreground);
+		font-family: var(--mint-font-body);
+		-webkit-font-smoothing: antialiased;
+		overflow-x: clip;
+	}
+	.mint-btn {
+		font-weight: var(--mint-button-weight, 600);
+		border-radius: var(--mint-button-radius, 0.5rem);
+		text-transform: var(--mint-button-transform, none);
+		cursor: pointer;
+	}
+	/* Rich text (the text block): the sanitizer's allowlist, styled with the theme. */
+	.mint-prose > * + * {
+		margin-top: 0.85em;
+	}
+	.mint-prose :is(h2, h3, h4) {
+		font-family: var(--mint-font-heading);
+		font-weight: 600;
+		line-height: 1.25;
+		margin-top: 1.4em;
+	}
+	.mint-prose h2 {
+		font-size: 1.5em;
+	}
+	.mint-prose h3 {
+		font-size: 1.25em;
+	}
+	.mint-prose h4 {
+		font-size: 1.1em;
+	}
+	.mint-prose a {
+		color: var(--mint-color-primary);
+		text-decoration: underline;
+		text-underline-offset: 3px;
+	}
+	.mint-prose ul {
+		list-style: disc;
+		padding-left: 1.25em;
+	}
+	.mint-prose ol {
+		list-style: decimal;
+		padding-left: 1.25em;
+	}
+	.mint-prose li + li {
+		margin-top: 0.3em;
+	}
+	.mint-prose blockquote {
+		border-left: 3px solid var(--mint-color-border);
+		padding-left: 1em;
+		color: var(--mint-color-muted-foreground);
+	}
+	.mint-prose code {
+		font-family: var(--mint-font-mono);
+		font-size: 0.9em;
+		background: var(--mint-color-muted);
+		padding: 0.1em 0.35em;
+		border-radius: var(--mint-radius-sm);
+	}
+}

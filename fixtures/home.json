@@ -1,0 +1,624 @@
+{
+	"name": "Fixture home",
+	"path": "/",
+	"tree": [
+		{
+			"id": "fxHero01",
+			"type": "section",
+			"props": {
+				"width": "narrow",
+				"paddingY": "xl"
+			},
+			"name": "Hero",
+			"style": {
+				"base": {
+					"gradient": {
+						"from": "accent",
+						"to": "background",
+						"angle": 180
+					}
+				}
+			},
+			"children": [
+				{
+					"id": "fxHeroSt",
+					"type": "stack",
+					"props": {
+						"direction": "column",
+						"gap": 6,
+						"align": "center"
+					},
+					"style": {
+						"base": {
+							"textAlign": "center"
+						}
+					},
+					"children": [
+						{
+							"id": "fxHeroIc",
+							"type": "icon",
+							"props": {
+								"name": "sparkle",
+								"size": 32,
+								"label": ""
+							},
+							"style": {
+								"base": {
+									"color": "primary"
+								}
+							}
+						},
+						{
+							"id": "fxHeroH1",
+							"type": "heading",
+							"props": {
+								"text": "Every block on one page",
+								"level": 1
+							}
+						},
+						{
+							"id": "fxHeroTx",
+							"type": "text",
+							"props": {
+								"html": "<p>This fixture draws all fourteen primitives with the <strong>Studio</strong> theme. Add <code>?theme=dark</code> to see the dark tokens.</p>",
+								"size": "xl",
+								"muted": true
+							}
+						},
+						{
+							"id": "fxHeroBt",
+							"type": "stack",
+							"props": {
+								"direction": "row",
+								"gap": 3,
+								"justify": "center",
+								"align": "center"
+							},
+							"children": [
+								{
+									"id": "fxBtnPri",
+									"type": "button",
+									"props": {
+										"label": "Primary",
+										"variant": "primary",
+										"size": "lg",
+										"icon": "arrow-right"
+									},
+									"action": {
+										"type": "scroll",
+										"target": "fxGridSe"
+									}
+								},
+								{
+									"id": "fxBtnOut",
+									"type": "button",
+									"props": {
+										"label": "Outline",
+										"variant": "outline",
+										"size": "lg"
+									},
+									"action": {
+										"type": "link",
+										"href": "#node:fxMediaS"
+									}
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "fxGridSe",
+			"type": "section",
+			"props": {
+				"paddingY": "lg"
+			},
+			"name": "Features",
+			"children": [
+				{
+					"id": "fxGridHd",
+					"type": "heading",
+					"props": {
+						"text": "A grid of cards",
+						"level": 2
+					},
+					"style": {
+						"base": {
+							"marginBottom": 8
+						}
+					}
+				},
+				{
+					"id": "fxGrid01",
+					"type": "grid",
+					"props": {
+						"columns": 3,
+						"columnsTablet": 2,
+						"columnsMobile": 1,
+						"gap": 6
+					},
+					"children": [
+						{
+							"id": "fxCard00",
+							"type": "stack",
+							"props": {
+								"direction": "column",
+								"gap": 3
+							},
+							"style": {
+								"base": {
+									"paddingTop": 6,
+									"paddingRight": 6,
+									"paddingBottom": 6,
+									"paddingLeft": 6,
+									"bgColor": "card",
+									"borderWidth": 1,
+									"borderColor": "border",
+									"radius": "lg",
+									"shadow": "sm"
+								}
+							},
+							"children": [
+								{
+									"id": "fxCard01",
+									"type": "icon",
+									"props": {
+										"name": "lightning",
+										"size": 32
+									},
+									"style": {
+										"base": {
+											"color": "primary"
+										}
+									}
+								},
+								{
+									"id": "fxCard02",
+									"type": "heading",
+									"props": {
+										"text": "Fast",
+										"level": 3
+									}
+								},
+								{
+									"id": "fxCard03",
+									"type": "text",
+									"props": {
+										"html": "<p>Server-rendered pages with one compiled style block.</p>",
+										"muted": true
+									}
+								},
+								{
+									"id": "fxCard04",
+									"type": "link",
+									"props": {
+										"text": "Read more \u2192",
+										"tone": "primary"
+									},
+									"action": {
+										"type": "link",
+										"href": "/about"
+									}
+								}
+							]
+						},
+						{
+							"id": "fxCard10",
+							"type": "stack",
+							"props": {
+								"direction": "column",
+								"gap": 3
+							},
+							"style": {
+								"base": {
+									"paddingTop": 6,
+									"paddingRight": 6,
+									"paddingBottom": 6,
+									"paddingLeft": 6,
+									"bgColor": "card",
+									"borderWidth": 1,
+									"borderColor": "border",
+									"radius": "lg",
+									"shadow": "sm"
+								}
+							},
+							"children": [
+								{
+									"id": "fxCard11",
+									"type": "icon",
+									"props": {
+										"name": "palette",
+										"size": 32
+									},
+									"style": {
+										"base": {
+											"color": "primary"
+										}
+									}
+								},
+								{
+									"id": "fxCard12",
+									"type": "heading",
+									"props": {
+										"text": "Themed",
+										"level": 3
+									}
+								},
+								{
+									"id": "fxCard13",
+									"type": "text",
+									"props": {
+										"html": "<p>Colours, fonts and radius come from tokens.</p>",
+										"muted": true
+									}
+								},
+								{
+									"id": "fxCard14",
+									"type": "link",
+									"props": {
+										"text": "Read more \u2192",
+										"tone": "primary"
+									},
+									"action": {
+										"type": "link",
+										"href": "/about"
+									}
+								}
+							]
+						},
+						{
+							"id": "fxCard20",
+							"type": "stack",
+							"props": {
+								"direction": "column",
+								"gap": 3
+							},
+							"style": {
+								"base": {
+									"paddingTop": 6,
+									"paddingRight": 6,
+									"paddingBottom": 6,
+									"paddingLeft": 6,
+									"bgColor": "card",
+									"borderWidth": 1,
+									"borderColor": "border",
+									"radius": "lg",
+									"shadow": "sm"
+								}
+							},
+							"children": [
+								{
+									"id": "fxCard21",
+									"type": "icon",
+									"props": {
+										"name": "device-mobile",
+										"size": 32
+									},
+									"style": {
+										"base": {
+											"color": "primary"
+										}
+									}
+								},
+								{
+									"id": "fxCard22",
+									"type": "heading",
+									"props": {
+										"text": "Responsive",
+										"level": 3
+									}
+								},
+								{
+									"id": "fxCard23",
+									"type": "text",
+									"props": {
+										"html": "<p>Styles per breakpoint: base, 768 px and 1024 px.</p>",
+										"muted": true
+									}
+								},
+								{
+									"id": "fxCard24",
+									"type": "link",
+									"props": {
+										"text": "Read more \u2192",
+										"tone": "primary"
+									},
+									"action": {
+										"type": "link",
+										"href": "/about"
+									}
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "fxTextSe",
+			"type": "section",
+			"props": {
+				"width": "narrow",
+				"paddingY": "md"
+			},
+			"name": "Rich text",
+			"children": [
+				{
+					"id": "fxTextH2",
+					"type": "heading",
+					"props": {
+						"text": "Rich text",
+						"level": 2
+					}
+				},
+				{
+					"id": "fxRich01",
+					"type": "text",
+					"props": {
+						"html": "<p>Paragraphs with <strong>bold</strong>, <em>italics</em> and <a href=\"https://example.com\">a link</a>.</p><ul><li>A list item</li><li>Another one</li></ul><blockquote>A quote stands out.</blockquote><p>Unsafe bits are dropped: <a href=\"javascript:alert(1)\">no script link</a><script>alert(1)</script>.</p>"
+					}
+				},
+				{
+					"id": "fxSpace1",
+					"type": "spacer",
+					"props": {
+						"size": 8
+					}
+				},
+				{
+					"id": "fxDivid1",
+					"type": "divider",
+					"props": {
+						"thickness": 1,
+						"lineStyle": "dashed"
+					}
+				},
+				{
+					"id": "fxSpace2",
+					"type": "spacer",
+					"props": {
+						"size": 8
+					}
+				},
+				{
+					"id": "fxContai",
+					"type": "container",
+					"props": {
+						"size": "sm"
+					},
+					"style": {
+						"base": {
+							"paddingTop": 4,
+							"paddingBottom": 4,
+							"paddingLeft": 4,
+							"paddingRight": 4,
+							"bgColor": "muted",
+							"radius": "md"
+						}
+					},
+					"children": [
+						{
+							"id": "fxContTx",
+							"type": "text",
+							"props": {
+								"html": "<p>A container keeps this to a small width. It is hidden on phones and shown from 768 px.</p>",
+								"size": "sm"
+							}
+						}
+					],
+					"hidden": {
+						"base": true,
+						"md": false
+					}
+				}
+			]
+		},
+		{
+			"id": "fxMediaS",
+			"type": "section",
+			"props": {
+				"paddingY": "lg"
+			},
+			"name": "Media",
+			"style": {
+				"base": {
+					"bgColor": "muted"
+				}
+			},
+			"children": [
+				{
+					"id": "fxMedGrd",
+					"type": "grid",
+					"props": {
+						"columns": 2,
+						"columnsTablet": 2,
+						"columnsMobile": 1,
+						"gap": 8
+					},
+					"children": [
+						{
+							"id": "fxImage1",
+							"type": "image",
+							"props": {
+								"src": "placeholder:1200x800:Placeholder image",
+								"alt": "A placeholder",
+								"ratio": "4/3",
+								"rounded": "lg"
+							}
+						},
+						{
+							"id": "fxImage2",
+							"type": "image",
+							"props": {
+								"src": "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&q=70",
+								"alt": "A bright office",
+								"ratio": "4/3",
+								"rounded": "lg"
+							}
+						},
+						{
+							"id": "fxVideo1",
+							"type": "video",
+							"props": {
+								"url": "https://www.youtube.com/watch?v=aqz-KE-bpKQ",
+								"title": "Big Buck Bunny",
+								"ratio": "16/9"
+							}
+						},
+						{
+							"id": "fxEmbed1",
+							"type": "embed",
+							"props": {
+								"url": "https://maps.google.com/maps?q=Eiffel%20Tower%2C%20Paris&output=embed",
+								"title": "Map",
+								"height": 360
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "fxButtns",
+			"type": "section",
+			"props": {
+				"paddingY": "md"
+			},
+			"name": "Buttons",
+			"children": [
+				{
+					"id": "fxBtnRow",
+					"type": "stack",
+					"props": {
+						"direction": "row",
+						"gap": 3,
+						"wrap": true,
+						"align": "center",
+						"stackOnMobile": false
+					},
+					"children": [
+						{
+							"id": "fxBtnV01",
+							"type": "button",
+							"props": {
+								"label": "Primary",
+								"variant": "primary"
+							}
+						},
+						{
+							"id": "fxBtnV02",
+							"type": "button",
+							"props": {
+								"label": "Secondary",
+								"variant": "secondary"
+							}
+						},
+						{
+							"id": "fxBtnV03",
+							"type": "button",
+							"props": {
+								"label": "Outline",
+								"variant": "outline",
+								"icon": "heart",
+								"iconPosition": "start"
+							}
+						},
+						{
+							"id": "fxBtnV04",
+							"type": "button",
+							"props": {
+								"label": "Ghost",
+								"variant": "ghost"
+							}
+						},
+						{
+							"id": "fxBtnV05",
+							"type": "button",
+							"props": {
+								"label": "Link",
+								"variant": "link"
+							},
+							"action": {
+								"type": "link",
+								"href": "https://example.com",
+								"newTab": true
+							}
+						},
+						{
+							"id": "fxBtnV06",
+							"type": "button",
+							"props": {
+								"label": "Small",
+								"variant": "primary",
+								"size": "sm"
+							}
+						},
+						{
+							"id": "fxIconLk",
+							"type": "icon",
+							"props": {
+								"name": "instagram-logo",
+								"size": 24,
+								"label": "Instagram"
+							},
+							"action": {
+								"type": "link",
+								"href": "https://instagram.com",
+								"newTab": true
+							}
+						}
+					]
+				},
+				{
+					"id": "fxUnknwn",
+					"type": "not-a-block",
+					"props": {
+						"x": 1
+					}
+				}
+			]
+		},
+		{
+			"id": "fxStyleS",
+			"type": "section",
+			"props": {
+				"paddingY": "md"
+			},
+			"name": "Styles per breakpoint",
+			"style": {
+				"base": {
+					"bgColor": "primary",
+					"color": "primary-foreground"
+				},
+				"md": {
+					"bgColor": "secondary",
+					"color": "secondary-foreground"
+				},
+				"lg": {
+					"bgColor": "accent",
+					"color": "accent-foreground"
+				}
+			},
+			"children": [
+				{
+					"id": "fxStyleT",
+					"type": "heading",
+					"props": {
+						"text": "Primary on phones, secondary on tablets, accent on desktops",
+						"level": 2,
+						"size": "md"
+					},
+					"style": {
+						"base": {
+							"textAlign": "center"
+						},
+						"lg": {
+							"textAlign": "left"
+						}
+					}
+				}
+			]
+		}
+	]
+}
