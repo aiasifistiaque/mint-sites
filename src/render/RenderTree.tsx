@@ -7,7 +7,7 @@ import { REGISTRY } from '@/blocks/registry';
 import type { BlockEntry } from '@/blocks/types';
 import type { BlockDef, Node, PropDef, RenderContext } from '@/types';
 import { actionAttrs, anchorId } from './actions';
-import { withData } from './bind';
+import { interpolate, withData } from './bind';
 
 const ID = /^[A-Za-z0-9_-]{1,32}$/;
 export const MAX_RENDER_DEPTH = 30;
@@ -74,7 +74,9 @@ function RenderNode({ node, ctx, registry, depth }: { node: Node; ctx: RenderCon
 	const { props, bound } = withData(node, own, propDefsOf(def), ctx.scope, ctx.mode === 'edit');
 	// The editor doesn't type over a value that comes from data.
 	if (ctx.mode === 'edit' && bound.length) attrs['data-mint-bound'] = bound.join(' ');
-	const action = def.actions ? actionAttrs(node.action, ctx) : null;
+	// A link to a record's own page: "/services/{{item.slug}}", each value encoded.
+	const link = node.action?.type === 'link' && node.action.href?.includes('{{') && ctx.scope ? { ...node.action, href: interpolate(node.action.href, ctx.scope, encodeURIComponent) } : node.action;
+	const action = def.actions ? actionAttrs(link, ctx) : null;
 	// A block that draws its slots more than once (a collection: once per record) draws them itself.
 	const renderSlot = (name: string, c: RenderContext) => (
 		<RenderTree nodes={name === 'children' ? node.children : node.slots?.[name]} ctx={c} registry={registry} depth={depth + 1} />
