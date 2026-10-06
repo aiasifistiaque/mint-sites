@@ -38,6 +38,7 @@ import { def as socialLinks } from './social-links/schema';
 import { def as stat } from './stat/schema';
 import { def as tab } from './tab/schema';
 import { def as tabs } from './tabs/schema';
+import { def as collection } from './collection/schema';
 
 export const BLOCK_DEFS: BlockDef[] = [
 	section,
@@ -77,4 +78,5 @@ export const BLOCK_DEFS: BlockDef[] = [
 	stat,
 	tab,
 	tabs,
+	collection,
 ];

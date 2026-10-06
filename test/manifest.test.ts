@@ -8,7 +8,7 @@ describe('manifest', () => {
 	const m = buildManifest();
 	it('lists the blocks (primitives, overlays, saved sections, SB-08’s catalogue), the themes, the icons and limits', () => {
 		expect(m.blocks.map(b => b.type)).toEqual([
-			'accordion', 'accordion-item', 'badge', 'breadcrumbs', 'button', 'card', 'carousel', 'container', 'countdown', 'divider', 'drawer',
+			'accordion', 'accordion-item', 'badge', 'breadcrumbs', 'button', 'card', 'carousel', 'collection', 'container', 'countdown', 'divider', 'drawer',
 			'embed', 'form-placeholder', 'gallery', 'grid', 'header', 'heading', 'icon', 'image', 'link', 'logo', 'map', 'marquee', 'modal',
 			'nav-menu', 'popover', 'quote', 'section', 'section-ref', 'social-links', 'spacer', 'stack', 'stat', 'tab', 'tabs', 'text', 'video',
 		]);

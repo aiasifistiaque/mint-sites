@@ -12,7 +12,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { REGISTRY } from '@/blocks/registry';
 import { sanitizeRichText } from '@/render/sanitize';
 import { SiteDocument } from '@/render/SiteDocument';
-import type { Node } from '@/types';
+import type { Node, PageData } from '@/types';
 import { elementOf, findDrop, locate, type DropResult } from './drop';
 import { isPanelMessage, type CanvasContext, type CanvasDesign, type CanvasLayout, type CanvasMessage, type Rect } from './protocol';
 
@@ -24,6 +24,7 @@ type State = {
 	theme: 'light' | 'dark';
 	readOnly: boolean;
 	context: CanvasContext;
+	data: PageData;
 };
 
 const findNode = (nodes: Node[] | undefined, id: string): Node | null => {
@@ -92,7 +93,7 @@ export default function EditRoot({ origins, manifestVersion }: { origins: string
 			const m = e.data;
 			switch (m.type) {
 				case 'init':
-					setState({ design: m.design, layout: m.layout, tree: m.page.tree, links: m.links || {}, theme: m.theme, readOnly: !!m.readOnly, context: m.context || {} });
+					setState({ design: m.design, layout: m.layout, tree: m.page.tree, links: m.links || {}, theme: m.theme, readOnly: !!m.readOnly, context: m.context || {}, data: m.data || {} });
 					break;
 				case 'tree':
 					setState(s => (s ? { ...s, tree: m.tree, ...(m.layout !== undefined && { layout: m.layout }) } : s));
@@ -102,6 +103,9 @@ export default function EditRoot({ origins, manifestVersion }: { origins: string
 					break;
 				case 'context':
 					setState(s => (s ? { ...s, context: m.context || {} } : s));
+					break;
+				case 'data':
+					setState(s => (s ? { ...s, data: m.data || {} } : s));
 					break;
 				case 'theme':
 					setState(s => (s ? { ...s, theme: m.theme } : s));
@@ -251,6 +255,8 @@ export default function EditRoot({ origins, manifestVersion }: { origins: string
 		const target = e.target instanceof Element ? e.target.closest<HTMLElement>('[data-mint-text]') : null;
 		const id = target?.closest<HTMLElement>('[data-n]')?.dataset.n;
 		if (!target || !id || !locate(s.tree, id) || findNode(s.tree, id)?.locked) return;
+		// A value that comes from data is changed in its record, not typed here.
+		if ((target.closest<HTMLElement>('[data-n]')?.dataset.mintBound || '').split(' ').includes(target.dataset.mintText || '')) return;
 		e.preventDefault();
 		const rich = target.hasAttribute('data-mint-rich');
 		editing.current = { id, prop: target.dataset.mintText!, el: target, rich, original: target.innerHTML };
@@ -341,7 +347,18 @@ export default function EditRoot({ origins, manifestVersion }: { origins: string
 				tree={state.tree}
 				footer={state.layout?.footer}
 				sections={state.design.sections}
-				ctx={{ ...state.context, mode: 'edit', pages: state.links }}
+				ctx={{
+					...state.context,
+					mode: 'edit',
+					pages: state.links,
+					collections: state.data.nodes,
+					scope: {
+						record: state.data.record ?? undefined,
+						site: { name: state.context.site?.name, tagline: state.context.site?.tagline, ...(state.context.site?.contact || {}) },
+						content: state.data.contents,
+						currency: state.data.currency,
+					},
+				}}
 			/>
 			{openId && (
 				<div

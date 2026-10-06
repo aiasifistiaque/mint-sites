@@ -302,6 +302,32 @@ export type RenderContext = {
 	crumbs?: MenuItem[];
 	/** the accordion an accordion item belongs to (one open at a time) */
 	group?: string;
+	/** what bindings and {{ }} read: the collection's current item, the template page's record, the site, Contents by slug (SB-09) */
+	scope?: DataScope;
+	/** the records of the page's collection blocks, by node id (the backend resolves them) */
+	collections?: Record<string, CollectionData>;
+	/** inside a collection's item template: its node id (no list inside another) */
+	inCollection?: string;
+};
+
+export type DataScope = {
+	item?: Record<string, any>;
+	record?: Record<string, any>;
+	site?: Record<string, any>;
+	content?: Record<string, Record<string, any>>;
+	currency?: string;
+	locale?: string;
+};
+
+/** One collection's records (backend library/siteBuilder/resolve.ts). */
+export type CollectionData = { items: Record<string, any>[]; total: number; page: number; pageSize: number; totalPages: number; problem?: string };
+
+/** The data a page's bindings need, as the render API and the editor's resolve send it. */
+export type PageData = {
+	record?: Record<string, any> | null;
+	nodes?: Record<string, CollectionData>;
+	contents?: Record<string, Record<string, any>>;
+	currency?: string;
 };
 
 export type MenuItem = { label: string; path: string };

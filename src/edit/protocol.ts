@@ -1,9 +1,9 @@
 // The editor ↔ canvas protocol (backend docs/site-builder "Editor ↔ canvas
-// protocol", D9). The admin panel keeps a copy (admin
-// src/app/site-builder/_components/protocol.ts) — change both together.
+// protocol", D9). The builder keeps a copy (mint-builder
+// src/editor/protocol.ts) — change both together.
 // Every message is { mint: 1, type, …payload }; each side ignores messages from
 // any origin it doesn't trust. The canvas never saves: the panel owns the draft.
-import type { MenuItem, Node, SavedSection, SiteInfo, TokenOverrides } from '@/types';
+import type { MenuItem, Node, PageData, SavedSection, SiteInfo, TokenOverrides } from '@/types';
 
 export const PROTOCOL = 1;
 
@@ -37,8 +37,12 @@ export type PanelMessage =
 			/** a role that can't change the site: no dragging or typing on the canvas */
 			readOnly?: boolean;
 			context?: CanvasContext;
+			/** the page's data: collections' records, Contents, a template page's record (SB-09) */
+			data?: PageData;
 	  }
 	| { mint: 1; type: 'context'; context: CanvasContext }
+	/** the page's data, after the panel asked the backend (POST site-builder/resolve) */
+	| { mint: 1; type: 'data'; data: PageData }
 	| { mint: 1; type: 'tree'; tree: Node[]; layout?: CanvasLayout }
 	| { mint: 1; type: 'design'; design: CanvasDesign }
 	/** the panel's light / dark preview switch */

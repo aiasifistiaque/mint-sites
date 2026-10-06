@@ -23,6 +23,14 @@ export function LivePage({ data, slug, tree }: { data: RenderData; slug: string;
 					menu: data.menu,
 					path: data.page.path,
 					crumbs: data.crumbs,
+					collections: data.data?.nodes,
+					scope: {
+						record: data.data?.record ?? undefined,
+						site: { name: data.site.name, tagline: data.site.tagline, ...data.site.contact },
+						content: data.data?.contents,
+						currency: data.data?.currency,
+						locale: data.site.locale,
+					},
 				}}
 			/>
 			{data.tags.tracker && (

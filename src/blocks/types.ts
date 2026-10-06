@@ -8,7 +8,7 @@ export type BlockProps<P = Record<string, any>> = {
 	/** node.props over the defaults of the block's PropDefs */
 	props: P;
 	/** spread on the block's root element: data-n (styles, editor) and the anchor id */
-	attrs: { 'data-n'?: string; id?: string };
+	attrs: { 'data-n'?: string; id?: string; 'data-mint-bound'?: string };
 	/** the rendered default slot (only if the block declares one) */
 	children?: ReactNode;
 	/** rendered named slots */
@@ -16,6 +16,8 @@ export type BlockProps<P = Record<string, any>> = {
 	/** the node's action as attributes, if the block takes actions */
 	action: ActionAttrs | null;
 	ctx: RenderContext;
+	/** draws a slot ('children' or a named one) with another context — a collection draws its item template once per record */
+	renderSlot: (name: string, ctx: RenderContext) => ReactNode;
 };
 
 export type BlockEntry = { def: BlockDef; Component: (p: BlockProps<any>) => ReactNode };

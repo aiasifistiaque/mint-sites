@@ -79,6 +79,8 @@ import Tab from './tab';
 import { def as tabDef } from './tab/schema';
 import Tabs from './tabs';
 import { def as tabsDef } from './tabs/schema';
+import Collection from './collection';
+import { def as collectionDef } from './collection/schema';
 
 const entries: BlockEntry[] = [
 	{ def: sectionDef, Component: Section },
@@ -121,6 +123,8 @@ const entries: BlockEntry[] = [
 	{ def: marqueeDef, Component: Marquee },
 	{ def: mapDef, Component: MapBlock },
 	{ def: formPlaceholderDef, Component: FormPlaceholder },
+	// SB-09: data.
+	{ def: collectionDef, Component: Collection },
 ];
 
 export const REGISTRY: Record<string, BlockEntry> = Object.fromEntries(entries.map(e => [e.def.type, e]));

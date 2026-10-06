@@ -9,15 +9,17 @@ import { getRender } from '@/lib/api';
 import { LivePage } from '@/render/LivePage';
 import { pageMetadata } from '@/render/metadata';
 
-type Props = { params: Promise<{ site: string; path?: string[] }> };
+type Props = { params: Promise<{ site: string; path?: string[] }>; searchParams: Promise<{ page?: string | string[] }> };
 
-const load = async ({ params }: Props) => {
+const load = async ({ params, searchParams }: Props) => {
 	const { site, path } = await params;
+	const raw = (await searchParams).page;
+	const page = Math.min(Math.max(parseInt(String(Array.isArray(raw) ? raw[0] : raw || '1'), 10) || 1, 1), 1000);
 	const h = await headers();
 	// Only reachable through the proxy, which names the site itself.
 	if (h.get('x-mint-site') !== site) notFound();
 	const pagePath = `/${(path || []).join('/')}`;
-	const result = await getRender(site, pagePath, h.get('x-mint-project') || undefined);
+	const result = await getRender(site, pagePath, h.get('x-mint-project') || undefined, page);
 	return { site, result, origin: h.get('x-mint-origin') || '' };
 };
 

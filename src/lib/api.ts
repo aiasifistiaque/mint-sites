@@ -2,7 +2,7 @@
 // call carries x-mint-renderer so the backend knows it's the renderer (one
 // server drawing every site would otherwise hit the public API's per-IP limit).
 import { cache } from 'react';
-import type { Node, SavedSection, TokenOverrides } from '@/types';
+import type { Node, PageData, SavedSection, TokenOverrides } from '@/types';
 
 export const API = (process.env.MINT_API_URL || 'http://localhost:5031').replace(/\/$/, '');
 
@@ -39,8 +39,9 @@ export type RenderData = {
 	/** sections: only the saved sections this page and its layout use */
 	design: { theme: string; tokens: TokenOverrides; colorScheme: 'light' | 'dark' | 'system'; sections?: Record<string, SavedSection> };
 	layout: { header: Node[]; footer: Node[] } | null;
-	page: { id: string; path: string; name: string; tree: Node[]; seo: SeoResolved };
-	data: { record?: Record<string, unknown>; nodes: Record<string, unknown>; contents: Record<string, unknown> };
+	page: { id: string; path: string; name: string; kind?: 'static' | 'template'; tree: Node[]; seo: SeoResolved };
+	/** what the page's bindings show: collections' records, Contents by slug, a template page's record (SB-09) */
+	data: PageData;
 	menu: { label: string; path: string; children?: { label: string; path: string }[] }[];
 	/** the pages above this one, home first, this page last (breadcrumbs) */
 	crumbs?: { label: string; path: string }[];
@@ -60,9 +61,13 @@ export type RenderResult =
 	| { kind: 'redirect'; to: string; status: 307 | 308 }
 	| { kind: 'not-found' };
 
-/** One page of a site, cached by tag (site:<projectId>, site-slug:<slug>) until Publish revalidates it. */
-export const getRender = cache(async (slug: string, path: string, projectId?: string): Promise<RenderResult> => {
-	const url = `${API}/public/api/${encodeURIComponent(slug)}/render?path=${encodeURIComponent(path)}`;
+/**
+ * One page of a site, cached by tag (site:<projectId>, site-slug:<slug>) until
+ * Publish revalidates it. `page` is a list's ?page= (records change without a
+ * Publish, so the render's own TTL keeps them fresh).
+ */
+export const getRender = cache(async (slug: string, path: string, projectId?: string, page?: number): Promise<RenderResult> => {
+	const url = `${API}/public/api/${encodeURIComponent(slug)}/render?path=${encodeURIComponent(path)}${page && page > 1 ? `&page=${page}` : ''}`;
 	const tags = [`site-slug:${slug}`, ...(projectId ? [`site:${projectId}`] : [])];
 	const res = await fetch(url, { headers: backendHeaders(), next: { tags, revalidate: RENDER_TTL } });
 	if (res.status === 404) return { kind: 'not-found' };
