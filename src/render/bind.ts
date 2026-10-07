@@ -139,13 +139,17 @@ const coerce = (v: any, def: PropDef | undefined): any => {
 /**
  * A node's props with its data filled in: bound props from the scope, and
  * `{{ }}` in its text. `bound` names the props that came from data (the
- * editor doesn't edit those as text on the canvas).
+ * editor doesn't edit those as text on the canvas). In the editor, Contents
+ * bindings are left out: the tree holds a copy of their value.
  */
 export const withData = (node: Node, props: Record<string, any>, defs: Map<string, PropDef>, scope: Scope | undefined, edit: boolean) => {
 	if (!scope) return { props, bound: [] as string[] };
 	let out = props;
 	const bound: string[] = [];
 	for (const [key, b] of Object.entries(node.bind || {})) {
+		// In the editor a Contents-bound prop shows the tree's own copy — what's being typed;
+		// the backend writes it into Contents on save and reads panel edits back (SB-29).
+		if (edit && b?.from === 'content') continue;
 		const v = bindingValue(b, scope);
 		if (v === undefined || v === null || v === '') continue;
 		if (out === props) out = { ...props };

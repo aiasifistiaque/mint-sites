@@ -6,9 +6,9 @@ export const def: BlockDef = {
 	label: 'List of records',
 	category: 'data',
 	icon: 'database',
-	description: 'Shows records from one of the project’s models — services, team, products, posts — drawn with the blocks inside it, once per record.',
+	description: 'Shows records from one of the project’s models — services, team, products, posts — or the cards kept in a Contents record, drawn with the blocks inside it, once per record.',
 	aiHint:
-		'For anything that repeats and grows (services, team, products, posts, testimonials): props.source = { model: "<route>", sort: "-createdAt", pageSize: 12, filter: { featured: true } } names a model whose public API has list. Its children are the item template, drawn once per record; inside it bind props to the record with bind: { text: { from: "item", field: "title" } } or write "{{item.title}}" in text. slots.empty shows when there are no records.',
+		'For anything that repeats and grows (services, team, products, posts, testimonials): props.source = { model: "<route>", sort: "-createdAt", pageSize: 12, filter: { featured: true } } names a model whose public API has list. Its children are the item template, drawn once per record; inside it bind props to the record with bind: { text: { from: "item", field: "title" } } or write "{{item.title}}" in text. slots.empty shows when there are no records. For a section of cards (features, team, reviews, numbers) without a model of its own: props.source = { content: "<slug>" } names a Contents record of category "card" whose card list (title, subTitle, description, image) are the items — the builder makes these itself when a section is added.',
 	props: [
 		{ key: 'source', label: 'Records', kind: 'source', help: 'The model, its order, how many and which ones.' },
 		{ key: 'layout', label: 'Layout', kind: 'select', options: opts([['grid', 'Grid'], ['list', 'List']]), default: 'grid' },

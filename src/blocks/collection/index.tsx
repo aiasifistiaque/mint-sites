@@ -11,7 +11,8 @@ const pageHref = (path: string | undefined, page: number) => `${path || ''}${pag
 
 /**
  * A list of records (SB-09): its children are the item template, drawn once
- * per record of the model its `source` names, with `item` in scope for
+ * per record of the model its `source` names — or per card of a Contents
+ * record (`source: { content: <slug> }`, SB-29) — with `item` in scope for
  * bindings and {{item.…}}. The backend reads the records through the public
  * API's rules (library/siteBuilder/resolve.ts). In the editor, a list with no
  * records still shows its template once so it can be designed.
@@ -31,7 +32,12 @@ export default function Collection({ node, props, attrs, slots, ctx, renderSlot 
 	if (!items.length) {
 		const hasEmpty = !!node.slots?.empty?.length;
 		if (!edit) return hasEmpty ? <div {...attrs}>{slots.empty}</div> : null;
-		const why = !props.source?.model ? 'Pick the model this list shows (Records, on the right)' : data?.problem || 'No records yet — they show here when they’re added in the panel';
+		const cards = typeof props.source?.content === 'string' && props.source.content;
+		const why = cards
+			? data?.problem || 'No cards yet — add them under Cards, on the right, or in the panel’s Contents'
+			: !props.source?.model
+				? 'Pick the model this list shows (Records, on the right)'
+				: data?.problem || 'No records yet — they show here when they’re added in the panel';
 		return (
 			<div {...attrs} className='flex flex-col gap-3'>
 				<div className='rounded-md border border-dashed border-border px-3 py-2 text-xs text-muted-foreground'>{why}</div>
