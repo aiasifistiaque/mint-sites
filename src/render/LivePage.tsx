@@ -24,6 +24,7 @@ export function LivePage({ data, slug, tree }: { data: RenderData; slug: string;
 					path: data.page.path,
 					crumbs: data.crumbs,
 					collections: data.data?.nodes,
+					media: data.media,
 					scope: {
 						record: data.data?.record ?? undefined,
 						site: { name: data.site.name, tagline: data.site.tagline, ...data.site.contact },

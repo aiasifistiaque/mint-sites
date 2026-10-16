@@ -2,7 +2,7 @@
 // `[data-n="<id>"]{…}` rules, mobile first, with `@media (min-width:768px)` and
 // `(min-width:1024px)` groups. Values are checked against the style schema and
 // anything unknown is dropped, so data can never write raw CSS.
-import type { Breakpoint, Node, Style } from '@/types';
+import { focalCss, type Breakpoint, type MediaHints, type Node, type Style } from '@/types';
 import { isValidStyleValue } from './styleSchema';
 
 export const BREAKPOINTS: { key: Breakpoint; min: number }[] = [
@@ -148,7 +148,7 @@ function backgroundImage(s: Style): string | undefined {
 }
 
 /** The CSS for one node, per breakpoint (declarations only, no selector). */
-export function nodeRules(node: Pick<Node, 'style' | 'hidden'>): Record<Breakpoint, string[]> {
+export function nodeRules(node: Pick<Node, 'style' | 'hidden'>, media?: MediaHints): Record<Breakpoint, string[]> {
 	const out: Record<Breakpoint, string[]> = { base: [], md: [], lg: [] };
 	const own: Record<Breakpoint, Style> = {
 		base: cleanStyle(node.style?.base),
@@ -166,6 +166,9 @@ export function nodeRules(node: Pick<Node, 'style' | 'hidden'>): Record<Breakpoi
 			const img = backgroundImage(merged);
 			decl.push(`background-image:${img ?? 'none'}`);
 			if (merged.bgImage && !merged.bgSize) decl.push('background-size:cover');
+			// A library picture's focal point keeps its subject in view, unless the style sets a position (CMS-13).
+			const focal = merged.bgImage && !merged.bgPosition ? focalCss(media?.[merged.bgImage]?.focal) : undefined;
+			if (focal) decl.push(`background-position:${focal}`);
 			if (merged.bgImage) decl.push('background-repeat:no-repeat');
 		}
 		// Hidden is mobile first: hidden.base hides everywhere until md/lg says false.
@@ -193,12 +196,12 @@ function walk(nodes: unknown, depth: number, visit: (n: Node) => void) {
 }
 
 /** One CSS string for every node in the given tree(s). */
-export function compileStyles(tree: Node[]): string {
+export function compileStyles(tree: Node[], media?: MediaHints): string {
 	const groups: Record<Breakpoint, string[]> = { base: [], md: [], lg: [] };
 	walk(tree, 0, node => {
 		if (typeof node.id !== 'string' || !ID.test(node.id)) return;
 		if (!node.style && !node.hidden) return;
-		const rules = nodeRules(node);
+		const rules = nodeRules(node, media);
 		for (const { key } of BREAKPOINTS)
 			if (rules[key].length) groups[key].push(`[data-n="${node.id}"]{${rules[key].join(';')}}`);
 	});

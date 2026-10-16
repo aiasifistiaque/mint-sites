@@ -308,7 +308,15 @@ export type RenderContext = {
 	collections?: Record<string, CollectionData>;
 	/** inside a collection's item template: its node id (no list inside another) */
 	inCollection?: string;
+	/** library pictures' alt text and focal point, by address (backend docs/cms CMS-13) */
+	media?: MediaHints;
 };
+
+/** What the media library says about a picture: its alt text, and the point (0–1) that stays in view when it's cropped. */
+export type MediaHints = Record<string, { alt?: string; focal?: { x: number; y: number } }>;
+
+/** A focal point as CSS object-position / background-position. */
+export const focalCss = (f?: { x: number; y: number }) => (f ? `${Math.round(f.x * 1000) / 10}% ${Math.round(f.y * 1000) / 10}%` : undefined);
 
 export type DataScope = {
 	item?: Record<string, any>;

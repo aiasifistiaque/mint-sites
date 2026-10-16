@@ -2,6 +2,7 @@ import { isSafeMediaUrl } from '@/render/styleSchema';
 import { SvgIcon } from '../icon';
 import { parsePlaceholder } from '../image';
 import type { BlockProps } from '../types';
+import { focalCss } from '@/types';
 import { cx, EditHint, str } from '../util';
 
 const COLS: Record<number, string> = { 2: 'md:grid-cols-2', 3: 'md:grid-cols-3', 4: 'md:grid-cols-3 lg:grid-cols-4', 5: 'md:grid-cols-3 lg:grid-cols-5' };
@@ -14,7 +15,8 @@ type Item = { src: string; alt: string; caption: string };
 // with previous / next — Esc and the browser's focus handling for free.
 export default function Gallery({ node, props, attrs, ctx }: BlockProps) {
 	const items: Item[] = (Array.isArray(props.items) ? props.items : [])
-		.map((r: any) => ({ src: str(r?.src), alt: str(r?.alt), caption: str(r?.caption) }))
+		// The library's alt text when an item has none (CMS-13).
+		.map((r: any) => ({ src: str(r?.src), alt: str(r?.alt) || ctx.media?.[str(r?.src)]?.alt || '', caption: str(r?.caption) }))
 		.filter((r: Item) => parsePlaceholder(r.src) || isSafeMediaUrl(r.src))
 		.slice(0, 50);
 	if (!items.length) return <EditHint ctx={ctx} attrs={attrs}>Add pictures to the gallery</EditHint>;
@@ -32,7 +34,7 @@ export default function Gallery({ node, props, attrs, ctx }: BlockProps) {
 						</div>
 					) : (
 						// eslint-disable-next-line @next/next/no-img-element
-						<img src={it.src} alt={it.alt} loading='lazy' decoding='async' className='h-full w-full object-cover transition duration-300 group-hover:scale-[1.03] motion-reduce:transform-none' />
+						<img src={it.src} alt={it.alt} loading='lazy' decoding='async' style={{ objectPosition: focalCss(ctx.media?.[it.src]?.focal) }} className='h-full w-full object-cover transition duration-300 group-hover:scale-[1.03] motion-reduce:transform-none' />
 					);
 					return (
 						<li key={i} className='flex flex-col gap-2'>

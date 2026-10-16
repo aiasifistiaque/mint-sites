@@ -2,7 +2,7 @@
 // call carries x-mint-renderer so the backend knows it's the renderer (one
 // server drawing every site would otherwise hit the public API's per-IP limit).
 import { cache } from 'react';
-import type { Node, PageData, SavedSection, TokenOverrides } from '@/types';
+import type { MediaHints, Node, PageData, SavedSection, TokenOverrides } from '@/types';
 
 export const API = (process.env.MINT_API_URL || 'http://localhost:5031').replace(/\/$/, '');
 
@@ -54,6 +54,8 @@ export type RenderData = {
 		tracker?: { src: string; project: string } | null;
 	};
 	widgets: { enabled: string[]; apiBase: string };
+	/** library pictures on the page: alt text and focal point, by address (CMS-13) */
+	media?: MediaHints;
 };
 
 export type RenderResult =

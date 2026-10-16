@@ -72,7 +72,7 @@ export function SiteDocument({ theme, tokens, colorScheme = 'light', header = []
 				</>
 			)}
 			<style dangerouslySetInnerHTML={{ __html: tokensToCss(merged, colorScheme === 'system' ? 'system' : 'toggle') }} />
-			<style data-mint-nodes='' dangerouslySetInnerHTML={{ __html: compileStyles([...all, ...savedTrees.flat()]) }} />
+			<style data-mint-nodes='' dangerouslySetInnerHTML={{ __html: compileStyles([...all, ...savedTrees.flat()], ctx?.media) }} />
 			<div className='mint-site flex flex-col' {...(colorScheme !== 'system' ? { 'data-theme': colorScheme } : {})}>
 				{header.length > 0 && <RenderTree nodes={header} ctx={context} />}
 				<main className='flex-1'>

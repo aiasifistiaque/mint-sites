@@ -1,5 +1,6 @@
 import { isSafeMediaUrl } from '@/render/styleSchema';
 import type { BlockProps } from '../types';
+import { focalCss } from '@/types';
 import { cx, EditHint, oneOf, str } from '../util';
 import { RATIOS } from './schema';
 
@@ -12,7 +13,7 @@ const RADIUS: Record<string, string> = {
 	full: 'rounded-full',
 };
 
-function Img({ src, alt, priority, className }: { src: string; alt: string; priority: boolean; className: string }) {
+function Img({ src, alt, priority, className, focal }: { src: string; alt: string; priority: boolean; className: string; focal?: string }) {
 	// A plain <img> straight from the media host — no image optimizer (it's
 	// billed per image, and it would serve every tenant's pictures).
 	return (
@@ -24,6 +25,7 @@ function Img({ src, alt, priority, className }: { src: string; alt: string; prio
 			fetchPriority={priority ? 'high' : undefined}
 			decoding='async'
 			className={className}
+			style={focal ? { objectPosition: focal } : undefined}
 		/>
 	);
 }
@@ -54,12 +56,14 @@ export default function Image({ props, attrs, action, ctx }: BlockProps) {
 			</div>
 		);
 	} else if (isSafeMediaUrl(src)) {
-		const alt = str(props.alt);
+		// The block's own alt text, or the media library's (CMS-13); the library's focal point when it's cropped.
+		const known = ctx.media?.[src];
+		const alt = str(props.alt) || known?.alt || '';
 		const priority = !!props.priority;
 		picture =
 			ratio !== 'auto' ? (
 				<div className={cx('relative w-full overflow-hidden', radius)} style={aspect}>
-					<Img src={src} alt={alt} priority={priority} className={cx('absolute inset-0 h-full w-full', fit)} />
+					<Img src={src} alt={alt} priority={priority} className={cx('absolute inset-0 h-full w-full', fit)} focal={fit === 'object-cover' ? focalCss(known?.focal) : undefined} />
 				</div>
 			) : (
 				<Img src={src} alt={alt} priority={priority} className={cx('h-auto w-full', radius)} />
