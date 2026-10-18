@@ -3,7 +3,7 @@
 //   ?view=blocks                         every block with its defaults
 //   ?view=presets                        every preset, one after another
 //   ?view=demo                           a 20-section page (the performance budget, SB-08)
-//   ?view=richtext                       the text block: old Quill markup and plain HTML (docs/rich-text RT-00)
+//   ?view=richtext                       the text block: old Quill markup and plain HTML (docs/rich-text RT-00), a table (RT-15)
 //   ?preset=<key>                        one preset alone (thumbnails are shot from this)
 //   &theme=<key>  &mode=dark             any theme, light or dark
 // 404 in production unless MINT_FIXTURES=1.
@@ -78,7 +78,10 @@ const RICH_SAMPLES = {
 	clean:
 		'<h2>Saved by the editor now</h2><p>A paragraph with a <a href="/about">link</a>, <code>inline code</code>, H<sub>2</sub>O and x<sup>2</sup>.</p>' +
 		'<blockquote>A quote, in the theme\'s muted colour.</blockquote><hr><h3>Subheading</h3><ul><li>One<ul><li>Two</li></ul></li></ul>' +
-		'<p data-align="right">Right-aligned line.</p><pre>npm run dev\nnpm test</pre>',
+		'<p data-align="right">Right-aligned line.</p><pre>npm run dev\nnpm test</pre>' +
+		'<table><tbody><tr><td data-row="r1"><strong>Plan</strong></td><td data-row="r1"><strong>Price</strong></td><td data-row="r1" class="ql-align-right"><strong>Seats</strong></td></tr>' +
+		'<tr><td data-row="r2">Starter</td><td data-row="r2">$9</td><td data-row="r2" class="ql-align-right">3</td></tr>' +
+		'<tr><td data-row="r3">Team</td><td data-row="r3">$29</td><td data-row="r3" class="ql-align-right">20</td></tr></tbody></table>',
 };
 
 function richTextTree(): Node[] {

@@ -82,6 +82,17 @@ describe('sanitizeRichText — Quill 2 markup (records saved before RT-00)', () 
 				'<p><img src="https://cdn.x/a.png" alt="" width="300" loading="lazy" decoding="async"></p>'
 		);
 	});
+	it('keeps simple tables, without Quill’s row ids or merged cells', () => {
+		const quill =
+			'<table><tbody><tr><td data-row="row-ab12">Name</td><td data-row="row-ab12" class="ql-align-right">Price</td></tr>' +
+			'<tr><td data-row="row-cd34" colspan="2" onclick="x()">Tea <strong>hot</strong></td></tr></tbody></table>';
+		expect(sanitizeRichText(quill)).toBe(
+			'<table><tbody><tr><td>Name</td><td data-align="right">Price</td></tr><tr><td>Tea <strong>hot</strong></td></tr></tbody></table>'
+		);
+		expect(sanitizeRichText('<table><thead><tr><th>A</th></tr></thead><tbody><tr><td>1')).toBe(
+			'<table><thead><tr><th>A</th></tr></thead><tbody><tr><td>1</td></tr></tbody></table>'
+		);
+	});
 	it('leaves plain HTML lists alone', () => {
 		expect(sanitizeRichText('<ol><li>a<ol><li>b</li></ol></li></ol>')).toBe('<ol><li>a<ol><li>b</li></ol></li></ol>');
 	});

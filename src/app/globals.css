@@ -161,6 +161,28 @@
 		height: auto;
 		border-radius: var(--mint-radius-sm);
 	}
+	/* Tables from the editor: simple grids, scrolling sideways on a phone rather than squeezing. */
+	.mint-prose table {
+		display: block;
+		max-width: 100%;
+		overflow-x: auto;
+		border-collapse: collapse;
+		font-size: 0.95em;
+	}
+	.mint-prose :is(th, td) {
+		border: 1px solid var(--mint-color-border);
+		padding: 0.45em 0.7em;
+		vertical-align: top;
+		text-align: left;
+		min-width: 6em;
+	}
+	.mint-prose th {
+		font-weight: 600;
+		background: var(--mint-color-muted);
+	}
+	.mint-prose :is(th, td):empty::after {
+		content: '\00a0';
+	}
 	.mint-prose [data-align='center'] {
 		text-align: center;
 	}
