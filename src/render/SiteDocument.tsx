@@ -46,7 +46,7 @@ export function SiteDocument({ theme, tokens, colorScheme = 'light', header = []
 	const used = usedSections([all], sections);
 	const savedTrees = Object.values(used).map(s => s.tree);
 	const live = (ctx?.mode ?? 'live') === 'live';
-	const href = fontHref(merged, { mono: !live || JSON.stringify([all, savedTrees]).includes('<code') });
+	const href = fontHref(merged, { mono: !live || /<(code|pre)\b|ql-code-block/.test(JSON.stringify([all, savedTrees])) });
 	const context: RenderContext = { mode: 'live', ...ctx, anchors: collectAnchors([all, ...savedTrees]), sections: used };
 	const script = live ? interactiveScript(usedTypes([all, ...savedTrees])) : '';
 	return (

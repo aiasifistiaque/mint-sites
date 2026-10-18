@@ -115,7 +115,7 @@ export function tokensToCss(t: Tokens, scheme: 'toggle' | 'system' | 'light' | '
  */
 export function fontHref(t: Tokens, { mono = true }: { mono?: boolean } = {}): string | null {
 	const byFamily = new Map<string, Set<number>>();
-	// The mono font only shows in rich-text <code>; a page without any skips it (SB-08 budget).
+	// The mono font only shows in rich-text <code> and <pre>; a page without any skips it (SB-08 budget).
 	for (const f of mono ? Object.values(t.fonts) : [t.fonts.heading, t.fonts.body]) {
 		if (!FONT_BY_FAMILY.has(f.family)) continue;
 		const set = byFamily.get(f.family) || new Set<number>();

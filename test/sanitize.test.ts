@@ -22,6 +22,69 @@ describe('sanitizeRichText', () => {
 	it('escapes stray brackets', () => {
 		expect(sanitizeRichText('1 < 2 > 0 & <3')).toBe('1 &lt; 2 &gt; 0 &amp; &lt;3');
 	});
+	it('keeps headings the block lacks as the nearest it has', () => {
+		expect(sanitizeRichText('<h1>Title</h1><p>Body</p><h6>Small</h6>')).toBe('<h2>Title</h2><p>Body</p><h4>Small</h4>');
+	});
+	it('keeps underline, strike, sub, sup, rules and code blocks', () => {
+		expect(sanitizeRichText('<p><u>u</u> <s>s</s> <del>d</del> x<sub>2</sub> y<sup>3</sup></p><hr><pre data-language="plain">a &lt; b\nc</pre>')).toBe(
+			'<p><u>u</u> <s>s</s> <s>d</s> x<sub>2</sub> y<sup>3</sup></p><hr><pre>a &lt; b\nc</pre>'
+		);
+	});
+	it('keeps alignment as data-align only', () => {
+		expect(sanitizeRichText('<p class="ql-align-center x">a</p><h3 style="text-align: right; color: red">b</h3><p data-align="evil">c</p>')).toBe(
+			'<p data-align="center">a</p><h3 data-align="right">b</h3><p>c</p>'
+		);
+	});
+	it('keeps safe images, lazy, with their size', () => {
+		expect(sanitizeRichText('<p><img src="https://cdn.x/a.png" alt="A &quot;cat&quot;" width="300" onerror="alert(1)"></p>')).toBe(
+			'<p><img src="https://cdn.x/a.png" alt="A &quot;cat&quot;" width="300" loading="lazy" decoding="async"></p>'
+		);
+		expect(sanitizeRichText('<img src="/media/b.jpg" style="width: 120px">')).toBe('<img src="/media/b.jpg" alt="" width="120" loading="lazy" decoding="async">');
+		expect(sanitizeRichText('<img src="data:image/png;base64,AAA">')).toBe('');
+		expect(sanitizeRichText('<img src="javascript:alert(1)">')).toBe('');
+		expect(sanitizeRichText('<img src="//evil.com/x.png">')).toBe('');
+	});
+});
+
+describe('sanitizeRichText — Quill 2 markup (records saved before RT-00)', () => {
+	const ui = '<span class="ql-ui" contenteditable="false"></span>';
+	it('turns bullet lists back into bullets', () => {
+		expect(sanitizeRichText(`<ol><li data-list="bullet">${ui}One</li><li data-list="bullet">${ui}Two</li></ol>`)).toBe('<ul><li>One</li><li>Two</li></ul>');
+	});
+	it('nests by indent and splits mixed lists', () => {
+		const html =
+			`<ol><li data-list="ordered">${ui}A</li><li data-list="bullet" class="ql-indent-1">${ui}A.1</li>` +
+			`<li data-list="bullet" class="ql-indent-1">${ui}A.2</li><li data-list="ordered">${ui}B</li><li data-list="bullet">${ui}C</li></ol>`;
+		expect(sanitizeRichText(html)).toBe('<ol><li>A<ul><li>A.1</li><li>A.2</li></ul></li><li>B</li></ol><ul><li>C</li></ul>');
+	});
+	it('nests one level at most on a jump', () => {
+		expect(sanitizeRichText(`<ol><li data-list="bullet">${ui}A</li><li data-list="bullet" class="ql-indent-3">${ui}B</li></ol>`)).toBe(
+			'<ul><li>A<ul><li>B</li></ul></li></ul>'
+		);
+	});
+	it('keeps an aligned list item', () => {
+		expect(sanitizeRichText(`<ol><li data-list="bullet" class="ql-align-center">${ui}A</li></ol>`)).toBe('<ul><li data-align="center">A</li></ul>');
+	});
+	it('reads code blocks', () => {
+		expect(
+			sanitizeRichText(
+				'<div class="ql-code-block-container" spellcheck="false"><div class="ql-code-block" data-language="plain">const a = 1;</div><div class="ql-code-block" data-language="plain"><br></div><div class="ql-code-block" data-language="plain">a &lt; b</div></div>'
+			)
+		).toBe('<pre>const a = 1;\n\na &lt; b</pre>');
+	});
+	it('reads the whole README §2 sample', () => {
+		const quill =
+			'<h1>Title</h1><p class="ql-align-center">Centered <u>under</u> <s>strike</s> <span style="color: rgb(230, 0, 0);">red</span></p>' +
+			`<ol><li data-list="bullet">${ui}Bullet one</li><li data-list="bullet">${ui}Bullet two</li></ol>` +
+			'<p><img src="https://cdn.x/a.png" width="300"></p>';
+		expect(sanitizeRichText(quill)).toBe(
+			'<h2>Title</h2><p data-align="center">Centered <u>under</u> <s>strike</s> red</p><ul><li>Bullet one</li><li>Bullet two</li></ul>' +
+				'<p><img src="https://cdn.x/a.png" alt="" width="300" loading="lazy" decoding="async"></p>'
+		);
+	});
+	it('leaves plain HTML lists alone', () => {
+		expect(sanitizeRichText('<ol><li>a<ol><li>b</li></ol></li></ol>')).toBe('<ol><li>a<ol><li>b</li></ol></li></ol>');
+	});
 });
 
 describe('isSafeHref', () => {

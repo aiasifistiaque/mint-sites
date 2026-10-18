@@ -116,6 +116,66 @@
 		padding: 0.1em 0.35em;
 		border-radius: var(--mint-radius-sm);
 	}
+	.mint-prose :is(ul, ol) :is(ul, ol) {
+		margin-top: 0.3em;
+	}
+	.mint-prose ul ul {
+		list-style: circle;
+	}
+	.mint-prose ul ul ul {
+		list-style: square;
+	}
+	.mint-prose ol ol {
+		list-style: lower-alpha;
+	}
+	.mint-prose u {
+		text-decoration: underline;
+		text-underline-offset: 3px;
+	}
+	.mint-prose s {
+		text-decoration: line-through;
+	}
+	.mint-prose hr {
+		border: 0;
+		border-top: 1px solid var(--mint-color-border);
+		margin-block: 1.6em;
+	}
+	.mint-prose pre {
+		font-family: var(--mint-font-mono);
+		font-size: 0.9em;
+		line-height: 1.55;
+		white-space: pre;
+		overflow-x: auto;
+		background: var(--mint-color-muted);
+		padding: 0.85em 1em;
+		border-radius: var(--mint-radius-sm);
+	}
+	.mint-prose pre code {
+		background: none;
+		padding: 0;
+		font-size: inherit;
+	}
+	.mint-prose img {
+		display: block;
+		max-width: 100%;
+		height: auto;
+		border-radius: var(--mint-radius-sm);
+	}
+	.mint-prose [data-align='center'] {
+		text-align: center;
+	}
+	.mint-prose [data-align='right'] {
+		text-align: right;
+	}
+	.mint-prose [data-align='justify'] {
+		text-align: justify;
+	}
+	.mint-prose [data-align='center'] img {
+		margin-inline: auto;
+	}
+	.mint-prose [data-align='right'] img {
+		margin-left: auto;
+	}
 
 	/* Overlays (modal, drawer, popover): hidden until opened (src/render/overlays.ts).
 	   A dimmed scrim, never a blur. */
