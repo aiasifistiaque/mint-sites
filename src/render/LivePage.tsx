@@ -5,7 +5,7 @@ import type { RenderData } from '@/lib/api';
 import type { Node } from '@/types';
 import { SiteDocument } from './SiteDocument';
 
-export function LivePage({ data, slug, tree }: { data: RenderData; slug: string; tree?: Node[] }) {
+export function LivePage({ data, tree }: { data: RenderData; slug: string; tree?: Node[] }) {
 	return (
 		<>
 			<SiteDocument
@@ -38,14 +38,14 @@ export function LivePage({ data, slug, tree }: { data: RenderData; slug: string;
 				<script
 					async
 					src={data.tags.tracker.src}
-					data-project={data.tags.tracker.project}
+					data-key={data.tags.tracker.key}
 				/>
 			)}
 			{data.widgets.enabled.length > 0 && (
 				<script
 					async
 					src={`${data.widgets.apiBase}/public/mint.js`}
-					data-project={slug}
+					data-key={data.widgets.key}
 				/>
 			)}
 		</>

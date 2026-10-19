@@ -51,9 +51,11 @@ export type RenderData = {
 		bodyStart: string;
 		bodyEnd: string;
 		verification?: { google: string; bing: string };
-		tracker?: { src: string; project: string } | null;
+		/** `key`: the project key that names the project to track.js (backend docs/api-builder D14). */
+		tracker?: { src: string; key: string } | null;
 	};
-	widgets: { enabled: string[]; apiBase: string };
+	/** `key`: the project key mint.js names the project by (backend docs/api-builder D14). */
+	widgets: { enabled: string[]; apiBase: string; key: string };
 	/** library pictures on the page: alt text and focal point, by address (CMS-13) */
 	media?: MediaHints;
 };
