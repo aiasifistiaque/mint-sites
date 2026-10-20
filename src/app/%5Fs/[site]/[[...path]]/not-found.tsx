@@ -34,9 +34,9 @@ export default async function SiteNotFound() {
 	if (slug) {
 		const own = await getRender(slug, '/404', projectId).catch(() => null);
 		// The title comes from the page's generateMetadata (not-found files can't set one).
-		if (own?.kind === 'page') return <LivePage data={own.data} slug={slug} />;
+		if (own?.kind === 'page') return <LivePage data={own.data} slug={slug} notFound />;
 		const home = await getRender(slug, '/', projectId).catch(() => null);
-		if (home?.kind === 'page') return <LivePage data={home.data} slug={slug} tree={DEFAULT_404} />;
+		if (home?.kind === 'page') return <LivePage data={home.data} slug={slug} tree={DEFAULT_404} notFound />;
 	}
 	return (
 		<main style={{ fontFamily: 'system-ui, sans-serif', maxWidth: 560, margin: '15vh auto', padding: '0 16px' }}>

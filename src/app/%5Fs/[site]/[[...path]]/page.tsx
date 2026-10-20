@@ -37,11 +37,17 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 }
 
 export default async function SitePage(props: Props) {
-	const { site, result } = await load(props);
+	const { site, result, origin } = await load(props);
 	if (result.kind === 'redirect') {
 		if (result.status === 308) permanentRedirect(result.to);
 		redirect(result.to);
 	}
 	if (result.kind === 'not-found') notFound();
-	return <LivePage data={result.data} slug={site} />;
+	return (
+		<LivePage
+			data={result.data}
+			slug={site}
+			origin={origin}
+		/>
+	);
 }

@@ -20,6 +20,25 @@ export type SeoResolved = {
 	noIndex: boolean;
 	canonical: string;
 	keywords: string[];
+	// The rest of the AGS VSeo (backend docs/site-builder SB-31). Optional: an
+	// older backend doesn't send them; empty strings fall back to the above.
+	focusKeyword?: string;
+	ogTitle?: string;
+	ogDescription?: string;
+	ogType?: '' | 'website' | 'article' | 'book' | 'profile';
+	ogImageAlt?: string;
+	twitterCard?: '' | 'summary' | 'summary_large_image' | 'app' | 'player';
+	twitterTitle?: string;
+	twitterDescription?: string;
+	twitterImage?: string;
+	noFollow?: boolean;
+	noArchive?: boolean;
+	noImageIndex?: boolean;
+	maxSnippet?: number;
+	maxImagePreview?: 'none' | 'standard' | 'large';
+	schemaType?: string;
+	schemaJson?: string;
+	breadcrumbTitle?: string;
 };
 
 export type RenderData = {
@@ -51,8 +70,10 @@ export type RenderData = {
 		bodyStart: string;
 		bodyEnd: string;
 		verification?: { google: string; bing: string };
-		/** `key`: the project key that names the project to track.js (backend docs/api-builder D14). */
-		tracker?: { src: string; key: string } | null;
+		/** `key`: the project key that names the project to track.js (backend docs/api-builder D14). `noCode`: the code below is printed here, not by track.js. */
+		tracker?: { src: string; key: string; noCode?: boolean } | null;
+		/** the tenant's own scripts, Site setup → Add script (backend docs/site-builder SB-30) */
+		code?: { head: string; bodyStart: string; bodyEnd: string };
 	};
 	/** `key`: the project key mint.js names the project by (backend docs/api-builder D14). */
 	widgets: { enabled: string[]; apiBase: string; key: string };

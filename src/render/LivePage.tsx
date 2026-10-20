@@ -1,13 +1,29 @@
 // A published page as visitors get it: the site document (theme, styles,
-// header, page, footer) plus the site's scripts — the tracker (pixels, the
-// tenant's code tags) and mint.js when any widget is on.
+// header, page, footer) plus the site's scripts — the tenant's own (Site setup
+// → Add script, SB-30), its structured data (SB-31), the tracker (pixels) and
+// mint.js when any widget is on.
 import type { RenderData } from '@/lib/api';
 import type { Node } from '@/types';
 import { SiteDocument } from './SiteDocument';
+import { SiteCodeBody, SiteCodeHead } from './SiteCode';
+import { JsonLd } from './JsonLd';
 
-export function LivePage({ data, tree }: { data: RenderData; slug: string; tree?: Node[] }) {
+/** `notFound`: the 404 (drawn with another page's data) — no structured data. */
+export function LivePage({ data, tree, origin, notFound }: { data: RenderData; slug: string; tree?: Node[]; origin?: string; notFound?: boolean }) {
+	const code = data.tags.code;
 	return (
 		<>
+			<SiteCodeHead html={code?.head} />
+			<SiteCodeBody
+				html={code?.bodyStart}
+				place='bodyStart'
+			/>
+			{!notFound && (
+				<JsonLd
+					data={data}
+					origin={origin || data.site.origin || ''}
+				/>
+			)}
 			<SiteDocument
 				theme={data.design.theme}
 				tokens={data.design.tokens}
@@ -39,6 +55,7 @@ export function LivePage({ data, tree }: { data: RenderData; slug: string; tree?
 					async
 					src={data.tags.tracker.src}
 					data-key={data.tags.tracker.key}
+					{...(data.tags.tracker.noCode && code && { 'data-no-code': '' })}
 				/>
 			)}
 			{data.widgets.enabled.length > 0 && (
@@ -48,6 +65,10 @@ export function LivePage({ data, tree }: { data: RenderData; slug: string; tree?
 					data-key={data.widgets.key}
 				/>
 			)}
+			<SiteCodeBody
+				html={code?.bodyEnd}
+				place='bodyEnd'
+			/>
 		</>
 	);
 }
