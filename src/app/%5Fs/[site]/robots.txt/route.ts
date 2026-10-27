@@ -1,5 +1,6 @@
 // The site's robots.txt, from the backend; points at this address's sitemap
-// when the site allows indexing and the backend doesn't know its address yet.
+// when the site allows indexing and the backend doesn't know its address yet —
+// never in a file the owner wrote in full (X-Mint-Robots: custom, backend docs/seo SEO-09).
 import { headers } from 'next/headers';
 import { API, backendHeaders, RENDER_TTL } from '@/lib/api';
 
@@ -14,6 +15,6 @@ export async function GET(_req: Request, { params }: { params: Promise<{ site: s
 	});
 	if (!res.ok) return new Response('Not found', { status: 404 });
 	let text = await res.text();
-	if (origin && /^Allow: \/$/m.test(text) && !/^Sitemap:/m.test(text)) text = `${text.trimEnd()}\n\nSitemap: ${origin}/sitemap.xml\n`;
+	if (origin && res.headers.get('x-mint-robots') !== 'custom' && /^Allow: \/$/m.test(text) && !/^Sitemap:/m.test(text)) text = `${text.trimEnd()}\n\nSitemap: ${origin}/sitemap.xml\n`;
 	return new Response(text, { headers: { 'content-type': 'text/plain; charset=utf-8', 'cache-control': 'public, max-age=300' } });
 }
