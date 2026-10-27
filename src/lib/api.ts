@@ -38,6 +38,8 @@ export type SeoResolved = {
 	maxImagePreview?: 'none' | 'standard' | 'large';
 	schemaType?: string;
 	schemaJson?: string;
+	/** The structured data form's schema.org properties, built by the backend (docs/seo SEO-04). */
+	schemaProps?: Record<string, unknown>;
 	breadcrumbTitle?: string;
 };
 

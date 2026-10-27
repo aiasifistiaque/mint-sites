@@ -1,7 +1,8 @@
 // Structured data for a published page (backend docs/site-builder SB-31), as
 // the AGS frontend writes it: the page's own schema (SEO → Structured data:
 // "auto" is a WebPage, "none" leaves it out) with the page's custom JSON-LD
-// merged over it, a BreadcrumbList when the page sits below another, and on
+// merged over it (the structured data form's properties, backend docs/seo SEO-04, in
+// between), a BreadcrumbList when the page sits below another, and on
 // the home page the WebSite and the Organization. `<` is escaped so nothing
 // in it can close the script tag.
 import type { RenderData } from '@/lib/api';
@@ -36,7 +37,7 @@ export function pageSchemas(data: RenderData, origin: string) {
 			image,
 			...(home && { isPartOf: { '@id': `${home}/#website` } }),
 		});
-		out.push({ ...generated, ...(custom(seo.schemaJson) || {}) });
+		out.push({ ...generated, ...(seo.schemaProps || {}), ...(custom(seo.schemaJson) || {}) });
 	}
 
 	const crumbs = data.crumbs || [];
