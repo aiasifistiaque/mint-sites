@@ -135,3 +135,19 @@ describe('SB-08 blocks', () => {
 		expect(s).not.toContain('data-mint-carousel');
 	});
 });
+
+describe('SI-07 search blocks', () => {
+	it('live: places for the Search widget, unsafe addresses dropped', () => {
+		const s = html([n('search-box', { layout: 'box', resultsUrl: '/find' }), n('search-box', { resultsUrl: 'javascript:alert(1)' }), n('search-results', { showFilters: 'false', productUrl: '/shop/{slug}' })]);
+		expect(s).toContain('data-mint="search" data-layout="box" data-results-url="/find"');
+		expect(s).toContain('data-mint="search" data-layout="icon"');
+		expect(s).not.toContain('javascript');
+		expect(s).toContain('data-layout="results" data-show-filters="false" data-product-url="/shop/{slug}"');
+	});
+	it('in the editor: a sketch, no widget place', () => {
+		const s = html([n('search-box', { layout: 'box' }), n('search-results')], { ...site, mode: 'edit' });
+		expect(s).toContain('Search the store');
+		expect(s).toContain('Results for');
+		expect(s).not.toContain('data-mint="search"');
+	});
+});

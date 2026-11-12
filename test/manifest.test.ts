@@ -10,7 +10,7 @@ describe('manifest', () => {
 		expect(m.blocks.map(b => b.type)).toEqual([
 			'accordion', 'accordion-item', 'badge', 'breadcrumbs', 'button', 'card', 'carousel', 'collection', 'container', 'countdown', 'divider', 'drawer',
 			'embed', 'form-placeholder', 'gallery', 'grid', 'header', 'heading', 'icon', 'image', 'link', 'logo', 'map', 'marquee', 'modal',
-			'nav-menu', 'popover', 'quote', 'section', 'section-ref', 'social-links', 'spacer', 'stack', 'stat', 'tab', 'tabs', 'text', 'video',
+			'nav-menu', 'popover', 'quote', 'search-box', 'search-results', 'section', 'section-ref', 'social-links', 'spacer', 'stack', 'stat', 'tab', 'tabs', 'text', 'video',
 		]);
 		expect(m.themes.map(t => t.key)).toEqual(['bistro', 'bright', 'calm', 'editorial', 'market', 'mono', 'studio']);
 		expect(m.presets.length).toBeGreaterThanOrEqual(30);

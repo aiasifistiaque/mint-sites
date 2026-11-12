@@ -39,6 +39,8 @@ import { def as stat } from './stat/schema';
 import { def as tab } from './tab/schema';
 import { def as tabs } from './tabs/schema';
 import { def as collection } from './collection/schema';
+import { def as searchBox } from './search-box/schema';
+import { def as searchResults } from './search-results/schema';
 
 export const BLOCK_DEFS: BlockDef[] = [
 	section,
@@ -79,4 +81,6 @@ export const BLOCK_DEFS: BlockDef[] = [
 	tab,
 	tabs,
 	collection,
+	searchBox,
+	searchResults,
 ];

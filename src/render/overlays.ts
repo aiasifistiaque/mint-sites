@@ -16,7 +16,7 @@ export function hasOverlays(trees: Node[][]): boolean {
 			n =>
 				!!n &&
 				(OVERLAY_TYPES.has(n.type) ||
-					['open', 'close', 'toggle'].includes(n.action?.type as string) ||
+					['open', 'close', 'toggle', 'widget'].includes(n.action?.type as string) ||
 					visit(n.children) ||
 					Object.values(n.slots || {}).some(visit))
 		);
@@ -36,6 +36,7 @@ const o=get(t);if(!o)return;e.preventDefault();
 if(o.tagName==='DIALOG'){if(a==='close'||(a==='toggle'&&o.open))o.close();else if(!o.open)o.showModal()}
 else if(o.showPopover){const on=o.matches(':popover-open');if(a==='close'||(a==='toggle'&&on))o.hidePopover();else if(!on){o.showPopover();place(o,b)}}
 return}
+if(a==='open'&&b.getAttribute('data-mint-widget')==='search'&&window.Mint&&Mint.search){e.preventDefault();Mint.search.open('');return}
 if(el.tagName==='DIALOG'&&el.hasAttribute('data-mint-overlay')){const r=el.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)el.close()}
 });
 })();`;

@@ -46,6 +46,10 @@ import { def as accordionDef } from './accordion/schema';
 import AccordionItem from './accordion-item';
 import { def as accordionItemDef } from './accordion-item/schema';
 import Badge from './badge';
+import SearchBox from './search-box';
+import { def as searchBoxDef } from './search-box/schema';
+import SearchResults from './search-results';
+import { def as searchResultsDef } from './search-results/schema';
 import { def as badgeDef } from './badge/schema';
 import Breadcrumbs from './breadcrumbs';
 import { def as breadcrumbsDef } from './breadcrumbs/schema';
@@ -125,6 +129,9 @@ const entries: BlockEntry[] = [
 	{ def: formPlaceholderDef, Component: FormPlaceholder },
 	// SB-09: data.
 	{ def: collectionDef, Component: Collection },
+	// SI-07: the store's Search widget (mint.js mounts it; LivePage loads mint.js when a widget is on).
+	{ def: searchBoxDef, Component: SearchBox },
+	{ def: searchResultsDef, Component: SearchResults },
 ];
 
 export const REGISTRY: Record<string, BlockEntry> = Object.fromEntries(entries.map(e => [e.def.type, e]));
